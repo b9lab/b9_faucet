@@ -31,6 +31,7 @@
     "html-webpack-plugin": "^2.29.0",
     "json-loader": "^0.5.4",
     "mocha": "^3.4.2",
+    "solium": "^0.5.4",
     "style-loader": "^0.13.2",
     "truffle-contract": "^1.1.11",
     "web3": "^0.18.4",
