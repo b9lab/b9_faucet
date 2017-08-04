@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="." />
+    <title>Throttled Testnet Faucet - A B9Lab DApp</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='./css/app.css' rel='stylesheet' type='text/css'>
+    <link href='./css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+    <script src="./app.js"></script>
+</head>
+<body>
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://academy.b9lab.com">
+      <img src="images/logo-open-edx.png" id="logo"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="https://academy.b9lab.com">Check out our courses!</a></li>
+    </div><!--/.nav-collapse -->
+
+    <br/>
+    <br/>
+
+    <div id="web3_off">
+        <h1 id="web3_status">Connecting to Ethereum...</h1>
+    </div>
+
+    <div id="web3_on" class="container" style="display:none;">
+        <h1>
+        <span id="title" style="display:none;">Throttled Testnet Faucet</span>
+        <del id="title_deleted" title="There is no faucet on this network">
+            Throttled Testnet Faucet
+        </del>
+        </h1>
+        <br/>
+
+        <h4 id="title_your_balance" style="display:none;">
+            You <span style="font-size: 50%;">( <a id="your_address">Loading...</a> )</span>
+            have <span id="your_balance">Loading...</span> Ξ
+        </h4>
+
+        <div id="faucet_area" style="display:none;">
+
+            <h3>Withdraw</h3>
+            <p>Please Wait: <span id="coolDown" class="black">Loading...</span> Seconds</p>
+            <p>GiveAway: <span class="black"><span id="give_away">Loading...</span> Ξ</span></p>
+            <p>
+            <button id="btn_send" class="btn btn-success" onclick="App.sendCoin()" disabled="true">Send To</button>
+            <input id="recipient" type="text" placeholder="0x0123456789012345678901234567890123456789"/>
+            </p>
+            <p id="send_tx_para" style="visibility:hidden;">
+                Transaction: <a id="send_tx"></a> <span id="send_tx_status">N/A</span>
+            </p>
+            <p id="send_tx_error_para" style="visibility:hidden;">
+                Error: <span id="send_tx_error">N/A</span>
+            </p>
+
+            <div id="donate_area" style="display:none;">
+
+                <h3>Donate</h3>
+                <p>
+                <button class="btn btn-success" onclick="App.donate()">Credit</button>
+                <input id="donation" type="number" placeholder="a number"/> Ξ 
+                </p>
+                <p id="donate_tx_para" style="visibility:hidden;">
+                Transaction: <a id="donate_tx"></a> <span id="donate_tx_status">N/A</span>
+                </p>
+                <p id="donate_tx_error_para" style="visibility:hidden;">
+                    Error: <span id="donate_tx_error">N/A</span>
+                </p>
+
+            </div>
+
+            <h3>Info</h3>
+            <p>Balance: <span class="black"><span id="faucet_balance">Loading...</span> Ξ</span></p>
+            <p>Address: <a id="address">Loading...</a></p>
+            <p>Owner: <a id="owner">Loading...</a></p>
+
+        </div>
+    </div>
+</body>
+</html>
