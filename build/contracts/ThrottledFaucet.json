@@ -1,0 +1,377 @@
+{
+  "contract_name": "ThrottledFaucet",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNextTimestamp",
+      "outputs": [
+        {
+          "name": "_nextTimestamp",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "setOwner",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isRestricted",
+      "outputs": [
+        {
+          "name": "_restricted",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newRestricted",
+          "type": "bool"
+        }
+      ],
+      "name": "setRestricted",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "giveMe",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "who",
+          "type": "address"
+        }
+      ],
+      "name": "giveTo",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getGiveAway",
+      "outputs": [
+        {
+          "name": "_giveAway",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getOwner",
+      "outputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newGiveAway",
+          "type": "uint256"
+        }
+      ],
+      "name": "setGiveAway",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getDelay",
+      "outputs": [
+        {
+          "name": "_delay",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newDelay",
+          "type": "uint256"
+        }
+      ],
+      "name": "setDelay",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_restricted",
+          "type": "bool"
+        },
+        {
+          "name": "_giveAway",
+          "type": "uint256"
+        },
+        {
+          "name": "_delay",
+          "type": "uint256"
+        }
+      ],
+      "payable": true,
+      "type": "constructor"
+    },
+    {
+      "payable": true,
+      "type": "fallback"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "who",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogPaid",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "oldDelay",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "newDelay",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogDelayChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "oldGiveAway",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "newGiveAway",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogGiveAwayChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "oldRestricted",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "name": "newRestricted",
+          "type": "bool"
+        }
+      ],
+      "name": "LogRestrictedChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "oldOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "LogOwnerChanged",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x60606040526040516060806107228339810160409081528151602083015191909201515b5b805b825b845b5b60008054600160a060020a03191633600160a060020a03161790555b6000805460a060020a60ff02191674010000000000000000000000000000000000000000831515021790555b5060018190555b5060028190555b50426003555b5b5050505b6106878061009b6000396000f300606060405236156100935763ffffffff60e060020a60003504166311ee8382811461009c57806313af4035146100be5780631f5e8f4c146100ee57806324daddc5146101125780634921a91a1461013b57806363e4bff414610157578063764978f91461017f578063893d20e8146101a1578063ba40aaa1146101cd578063cebc9a82146101f4578063e177246e14610216575b61009a5b5b565b005b34156100a457fe5b6100ac61023d565b60408051918252519081900360200190f35b34156100c657fe5b6100da600160a060020a0360043516610244565b604080519115158252519081900360200190f35b34156100f657fe5b6100da610307565b604080519115158252519081900360200190f35b341561011a57fe5b6100da6004351515610318565b604080519115158252519081900360200190f35b6100da6103d6565b604080519115158252519081900360200190f35b6100da600160a060020a0360043516610420565b604080519115158252519081900360200190f35b341561018757fe5b6100ac61046c565b60408051918252519081900360200190f35b34156101a957fe5b6101b1610473565b60408051600160a060020a039092168252519081900360200190f35b34156101d557fe5b6100da600435610483565b604080519115158252519081900360200190f35b34156101fc57fe5b6100ac61050d565b60408051918252519081900360200190f35b341561021e57fe5b6100da600435610514565b604080519115158252519081900360200190f35b6003545b90565b60006000610250610473565b600160a060020a031633600160a060020a03161415156102705760006000fd5b600160a060020a03831615156102865760006000fd5b50600054600160a060020a0390811690831681146102fb57604051600160a060020a0380851691908316907ffcf23a92150d56e85e3a3d33b357493246e55783095eb6a733eb8439ffc752c890600090a360008054600160a060020a031916600160a060020a03851617905560019150610300565b600091505b5b50919050565b60005460a060020a900460ff165b90565b60006000610324610473565b600160a060020a031633600160a060020a03161415156103445760006000fd5b5060005460a060020a900460ff16801515831515146102fb576000546040805160a060020a90920460ff1615158252841515602083015280517fe6cd46a119083b86efc6884b970bfa30c1708f53ba57b86716f15b2f4551a9539281900390910190a16000805460a060020a60ff02191660a060020a8515150217905560019150610300565b600091505b5b50919050565b60006103e0610307565b801561040557506103ef610473565b600160a060020a031633600160a060020a031614155b156104105760006000fd5b610419336105a0565b90505b5b90565b600061042a610307565b801561044f5750610439610473565b600160a060020a031633600160a060020a031614155b1561045a5760006000fd5b610463826105a0565b90505b5b919050565b6001545b90565b600054600160a060020a03165b90565b6000600061048f610473565b600160a060020a031633600160a060020a03161415156104af5760006000fd5b506001548281146102fb57604080518281526020810185905281517f79a3746dde45672c9e8ab3644b8bb9c399a103da2dc94b56ba09777330a83509929181900390910190a160018381559150610300565b600091505b5b50919050565b6002545b90565b60006000610520610473565b600160a060020a031633600160a060020a03161415156105405760006000fd5b506002548281146102fb57604080518281526020810185905281517ff6991a728965fedd6e927fdf16bdad42d8995970b4b31b8a2bf88767516e2494929181900390910190a1600283905560019150610300565b600091505b5b50919050565b60006000426105ad61023d565b116102fb576105c46105bd61050d565b4201610652565b6105cc61046c565b604051909150600160a060020a038416908290600081818185876187965a03f1925050501561063d57604080518281529051600160a060020a038516917f9bca65ce52fdef8a470977b51f247a2295123a4807dfa9e502edf0d30722da3b919081900360200190a260019150610300565b6102fb42610652565b5b600091505b50919050565b60038190555b505600a165627a7a72305820b7280835cfeb04b542d767f9d0d1d100191abd94c9aded7a59c5dbe676087bfc0029",
+  "networks": {
+    "3": {
+      "events": {
+        "0x9bca65ce52fdef8a470977b51f247a2295123a4807dfa9e502edf0d30722da3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "who",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogPaid",
+          "type": "event"
+        },
+        "0xf6991a728965fedd6e927fdf16bdad42d8995970b4b31b8a2bf88767516e2494": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldDelay",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "newDelay",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogDelayChanged",
+          "type": "event"
+        },
+        "0x79a3746dde45672c9e8ab3644b8bb9c399a103da2dc94b56ba09777330a83509": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldGiveAway",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "newGiveAway",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogGiveAwayChanged",
+          "type": "event"
+        },
+        "0xe6cd46a119083b86efc6884b970bfa30c1708f53ba57b86716f15b2f4551a953": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldRestricted",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "newRestricted",
+              "type": "bool"
+            }
+          ],
+          "name": "LogRestrictedChanged",
+          "type": "event"
+        },
+        "0xfcf23a92150d56e85e3a3d33b357493246e55783095eb6a733eb8439ffc752c8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "oldOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "LogOwnerChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3b873a919aa0512d5a0f09e6dcceaa4a6727fafe",
+      "updated_at": 1497520405569
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1501881184584
+}
