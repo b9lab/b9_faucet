@@ -20,6 +20,7 @@ web3.eth.expectedPayableExceptionPromise = require("../utils/expectedPayableExce
 web3.eth.expectedExceptionPromise = require("../utils/expectedExceptionPromise.js");
 web3.eth.makeSureAreUnlocked = require("../utils/makeSureAreUnlocked.js");
 web3.eth.makeSureHasAtLeast = require("../utils/makeSureHasAtLeast.js");
+web3.eth.addTransactionToTxObject = require("../utils/addTransactionToTxObject.js");
 
 contract('ThrottledFaucet', function(accounts) {
 
@@ -381,6 +382,7 @@ contract('ThrottledFaucet', function(accounts) {
                                 return created.giveMe(
                                     { from: from, value: initialParams.giveAway / 2 });
                             })
+                            .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                             .then(_txObject => {
                                 txObject = _txObject;
                                 assert.equal(txObject.logs.length, 1, "should have received 1 event");
@@ -403,10 +405,6 @@ contract('ThrottledFaucet', function(accounts) {
                                 assert.strictEqual(
                                     balance.toNumber(), initialParams.giveAway / 2,
                                     "should be what was sent along");
-                                return web3.eth.getTransactionPromise(txObject.tx);
-                            })
-                            .then(tx => {
-                                txObject.tx = tx;
                                 return web3.eth.getBalancePromise(from);
                             })
                             .then(balance => {
@@ -428,24 +426,18 @@ contract('ThrottledFaucet', function(accounts) {
                                 origBal = balance;
                                 return created.giveMe({ from: from, value: initialParams.giveAway / 2 });
                             })
+                            .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                             .then(txObject => {
                                 txObject1 = txObject;
-                                return web3.eth.getTransactionPromise(txObject.tx);
-                            })
-                            .then(tx => {
-                                txObject1.tx = tx;
                                 return created.giveMe.call({ from: from, value: initialParams.giveAway });
                             })
                             .then(success => {
                                 assert.isFalse(success, "should not accept");
                                 return created.giveMe({ from: from, value: initialParams.giveAway });
                             })
+                            .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                             .then(txObject => {
                                 txObject2 = txObject;
-                                return web3.eth.getTransactionPromise(txObject.tx);
-                            })
-                            .then(tx => {
-                                txObject2.tx = tx;
                                 assert.equal(txObject2.logs.length, 0, "should not have received any event");
                                 return web3.eth.getBalancePromise(created.address);
                             })
@@ -477,12 +469,9 @@ contract('ThrottledFaucet', function(accounts) {
                                 origBal = balance;
                                 return created.giveMe({ from: from, value: initialParams.giveAway / 2 });
                             })
+                            .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                             .then(txObject => {
                                 txObject1 = txObject;
-                                return web3.eth.getTransactionPromise(txObject.tx);
-                            })
-                            .then(tx => {
-                                txObject1.tx = tx;
                                 if (isTestRPC) {
                                     return web3.evm.increaseTimePromise(initialParams.delay)
                                         .then(() => web3.evm.minePromise());
@@ -495,12 +484,9 @@ contract('ThrottledFaucet', function(accounts) {
                                 assert.isTrue(success, "should accept");
                                 return created.giveMe({ from: from, value: initialParams.giveAway });
                             })
+                            .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                             .then(txObject => {
                                 txObject2 = txObject;
-                                return web3.eth.getTransactionPromise(txObject.tx);
-                            })
-                            .then(tx => {
-                                txObject2.tx = tx;
                                 assert.equal(txObject2.logs.length, 1, "should have received 1 event");
                                 assert.equal(txObject2.logs[ 0 ].args.who, from, "should be the recipient");
                                 assert.equal(
@@ -613,12 +599,9 @@ contract('ThrottledFaucet', function(accounts) {
                             return created.giveMe(
                                 { from: owner, value: initialParams.giveAway / 2 });
                         })
+                        .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                         .then(_txObject => {
                             txObject = _txObject;
-                            return web3.eth.getTransactionPromise(txObject.tx);
-                        })
-                        .then(tx => {
-                            txObject.tx = tx;
                             assert.equal(txObject.logs.length, 1, "should have received 1 event");
                             assert.equal(
                                 txObject.logs[ 0 ].args.who, owner,

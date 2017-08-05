@@ -1,7 +1,7 @@
 const Promise = require("bluebird");
 
 /**
- * @param {!Array.<function.Promise.<Any>>} promiseArray.
+ * @param {!Array.<function.<Promise.<Any> | Any>>} promiseArray.
  * @returns {!Promise.<Array.<Any>>} The results of the promises passed to the function.
  */
 module.exports = function sequentialPromise(promiseArray) {
