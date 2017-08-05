@@ -110,7 +110,7 @@ contract('Restrictable', function(accounts) {
     });
 
     describe("Use Modifier", function() {
-        var created;
+        let created;
 
         beforeEach("should create a RestrictableMock", function() {
             return Restrictable.new(false, { from: owner })
@@ -140,7 +140,7 @@ contract('Restrictable', function(accounts) {
     });
 
     describe("Monkey Proof", function() {
-        var created;
+        let created;
 
         beforeEach("should create a Restrictable", function() {
             return Restrictable.new(false, { from: owner })

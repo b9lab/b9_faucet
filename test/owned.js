@@ -121,7 +121,7 @@ contract('Owned', function(accounts) {
     });
 
     describe("Use Modifier", function() {
-        var created;
+        let created;
 
         beforeEach("should create an Owned", function() {
             return OwnedMock.new({ from: owner })
@@ -150,7 +150,7 @@ contract('Owned', function(accounts) {
     });
 
     describe("Monkey Proof", function() {
-        var created;
+        let created;
 
         beforeEach("should create an Owned", function() {
             return Owned.new({ from: owner })

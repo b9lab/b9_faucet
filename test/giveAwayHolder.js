@@ -124,7 +124,7 @@ contract('GiveAwayHolder', function(accounts) {
     });
 
     describe("Monkey Proof", function() {
-        var created;
+        let created;
 
         beforeEach("should create a GiveAwayHolder", function() {
             return GiveAwayHolder.new(1000, { from: owner })

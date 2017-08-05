@@ -647,7 +647,7 @@ contract('ThrottledFaucet', function(accounts) {
     });
 
     describe("Monkey Proof", function() {
-        var created;
+        let created;
 
         beforeEach("should create a ThrottledFaucet", function() {
             return ThrottledFaucet.new(1000, { from: owner })

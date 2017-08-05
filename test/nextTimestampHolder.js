@@ -1,6 +1,7 @@
 const NextTimestampHolder = artifacts.require("./NextTimestampHolderMock.sol");
 
 import { default as Promise } from 'bluebird';
+Promise.allNamed = require("../utils/sequentialPromiseNamed.js");
 
 if (typeof web3.eth.getBlockPromise !== "function") {
     Promise.promisifyAll(web3.eth, { suffix: "Promise" });
@@ -36,13 +37,13 @@ contract('NextTimestampHolder', function(accounts) {
                     created = _created;
                     return web3.eth.getTransactionReceipt(created.transactionHash);
                 })
-                .then(receipt => Promise.all([
-                    web3.eth.getBlockPromise(receipt.blockNumber),
-                    created.getNextTimestamp()
-                ]))
-                .then(blockAndTimestamp => {
+                .then(receipt => Promise.allNamed({
+                    block: () => web3.eth.getBlockPromise(receipt.blockNumber),
+                    timestamp: () => created.getNextTimestamp()
+                }))
+                .then(info => {
                     assert.strictEqual(
-                        blockAndTimestamp[ 0 ].timestamp, blockAndTimestamp[ 1 ].toNumber(),
+                        info.block.timestamp, info.timestamp.toNumber(),
                         "should be timestamp of creation");
                 });
         });
@@ -74,7 +75,7 @@ contract('NextTimestampHolder', function(accounts) {
     });
 
     describe("Monkey Proof", function() {
-        var created;
+        let created;
 
         beforeEach("should create a NextTimestampHolder", function() {
             return NextTimestampHolder.new({ from: owner })

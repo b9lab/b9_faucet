@@ -124,7 +124,7 @@ contract('DelayHolder', function(accounts) {
     });
 
     describe("Monkey Proof", function() {
-        var created;
+        let created;
 
         beforeEach("should create a DelayHolder", function() {
             return DelayHolder.new(1000, { from: owner })
