@@ -1,9 +1,17 @@
-# truffle-init-webpack
-Example webpack project with Truffle. Includes contracts, migrations, tests, user interface and webpack build pipeline.
+# B9lab Throttled Faucet
+Project to yield some Ether at regular interval to developers who need some.
 
 ## Usage
 
-To initialize a project with this exapmple, run `truffle init webpack` inside an empty directory.
+```sh
+# in terminal 1
+$ npm install
+$ ./node_modules/.bin/testrpc
+
+# in terminal 2
+$ ./node_modules/.bin/truffle migrate
+$ npm run dev
+```
 
 ## Building and the frontend
 
@@ -16,7 +24,7 @@ To initialize a project with this exapmple, run `truffle init webpack` inside an
 
 ## Common Errors
 
-* **Error: Can't resolve '../build/contracts/MetaCoin.json'**
+* **Error: Can't resolve '../build/contracts/ThrottledFaucet.json'**
 
 This means you haven't compiled or migrated your contracts yet. Run `truffle compile` and `truffle migrate` first.
 
@@ -24,6 +32,6 @@ Full error:
 
 ```
 ERROR in ./app/main.js
-Module not found: Error: Can't resolve '../build/contracts/MetaCoin.json' in '/Users/tim/Documents/workspace/Consensys/test3/app'
+Module not found: Error: Can't resolve '../build/contracts/ThrottledFaucet.json' in 'blah blah/app'
  @ ./app/main.js 11:16-59
 ```
