@@ -43,7 +43,7 @@ contract('ThrottledFaucet', function(accounts) {
             [ owner, owner2 ])
             .then(() => web3.eth.makeSureHasAtLeast(
                 owner, [ owner, owner2 ], web3.toWei(2)))
-            .then(web3.eth.getTransactionReceiptMined);
+            .then(txObject => web3.eth.getTransactionReceiptMined(txObject));
     });
 
     before("should identify TestRPC", function() {
@@ -665,10 +665,11 @@ contract('ThrottledFaucet', function(accounts) {
                         value: 1
                     });
                 })
+                .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(txObject => web3.eth.getBalancePromise(created.address))
                 .then(balance => assert.strictEqual(
-                    origBal.plus(1).toString(10),
                     balance.toString(10),
+                    origBal.plus(1).toString(10),
                     "should have received the sent wei"));
         });
     });

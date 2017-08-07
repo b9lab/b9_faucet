@@ -12,7 +12,7 @@ module.exports = function expectedExceptionPromise(actionPromise, gasToUse, time
     return actionPromise()
         .then(function(txObject) {
             if (typeof txObject === "string") {
-                return self.getTransactionReceiptMined(txnHash);
+                return self.getTransactionReceiptMined(txObject);
             } else if (typeof txObject.receipt === "object") {
                 return txObject.receipt;
             }
@@ -23,11 +23,11 @@ module.exports = function expectedExceptionPromise(actionPromise, gasToUse, time
             assert.equal(receipt.gasUsed, gasToUse, "should have used all the gas");
         })
         .catch(function(e) {
-            if ((e + "").indexOf("invalid opcode") > -1) {
+            if (e.message.indexOf("invalid opcode") > -1 ||
+                e.message.indexOf("invalid JUMP") > -1 ||
+                e.message.indexOf("out of gas") > -1) {
                 // We are in TestRPC
-            } else if ((e + "").indexOf("invalid JUMP") > -1 || (e + "").indexOf("out of gas") > -1) {
-                // We are in TestRPC
-            } else if ((e + "").indexOf("please check your gas amount") > -1) {
+            } else if (e.message.indexOf("please check your gas amount") > -1) {
                 // We are in Geth for a deployment
             } else {
                 throw e;

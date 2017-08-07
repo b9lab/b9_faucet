@@ -28,7 +28,7 @@ contract('Owned', function(accounts) {
             [ owner, owner2 ])
             .then(() => web3.eth.makeSureHasAtLeast(
                 owner, [ owner2 ], web3.toWei(2)))
-            .then(web3.eth.getTransactionReceiptMined);
+            .then(txObject => web3.eth.getTransactionReceiptMined(txObject));
     });
 
     describe("Deployment", function() {

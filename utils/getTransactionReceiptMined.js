@@ -20,10 +20,9 @@ module.exports = function getTransactionReceiptMined(txHash, interval) {
             }
         });
     };
-
     if (Array.isArray(txHash)) {
         return sequentialPromise(txHash.map(
-            oneTxHash => self.getTransactionReceiptMined(oneTxHash, interval)));
+            oneTxHash => () => self.getTransactionReceiptMined(oneTxHash, interval)));
     } else if (typeof txHash === "string") {
         return new Promise(transactionReceiptAsync);
     } else {
