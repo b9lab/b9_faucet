@@ -10,6 +10,7 @@ import throttledFaucetArtifacts from '../../build/contracts/ThrottledFaucet.json
 
 // ThrottledFaucet is our usable abstraction, which we'll use through the code below.
 const ThrottledFaucet = contract(throttledFaucetArtifacts);
+window.ThrottledFaucet = ThrottledFaucet;
 
 // Declare the possible web3 providers
 const rpcEndPoints = [
@@ -204,6 +205,9 @@ window.App = {
                             $("#owner").attr("href", self.params.etherscanUrl + "address/" + owner);
                         } else {
                             $("#owner").attr("title", "There is no block explorer on this network");
+                        }
+                        if (owner == window.account) {
+                            $(".owner-only").css({ visibility: "visible" });
                         }
                         return instance.getGiveAway();
                     })
@@ -401,6 +405,9 @@ window.App = {
         });
     },
 
+    /**
+     * @returns {!Promise}
+     */
     donate: function() {
         const self = this;
         const amount = $("#donation").val();
@@ -443,5 +450,29 @@ window.App = {
                 $("#donate_tx_error").html("error donation; see log. " + error);
                 $("#donate_tx_error_para").css("visibility", "visible");
             });
+    },
+
+    changeGiveAway: function() {
+        const self = this;
+        const amount = parseFloat($("#give_away_input").val());
+        if (isNaN(amount)) {
+            console.log("Could not get a number", amount);
+            return Promise.reject(new Error("Could not get a number"));
+        }
+        if (amount > 1) {
+            console.log("Too big a giveAway", amount);
+            return Promise.reject(new Error("Too big a giveAway"));
+        }
+
+        return ThrottledFaucet.deployed()
+            .then(instance => instance.setGiveAway(web3.toWei(amount), { from: window.account }))
+            .then(txObj => {
+                console.log(txObj);
+                return self.refreshStatics();
+            })
+            .catch(error => {
+                console.error(error);
+                throw error;
+            })
     },
 };

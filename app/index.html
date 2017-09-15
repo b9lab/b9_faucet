@@ -43,7 +43,13 @@
 
             <h3>Withdraw</h3>
             <p>Please Wait: <span id="coolDown" class="black">Loading...</span> Seconds</p>
-            <p>GiveAway: <span class="black"><span id="give_away">Loading...</span> Ξ</span></p>
+            <p>
+                GiveAway: <span class="black"><span id="give_away">Loading...</span> Ξ</span>
+                <span class="owner-only">
+                    <input id="give_away_input" type="number" class="small"/>
+                    <button class="btn btn-success" onclick="App.changeGiveAway()">Change</button>
+                </span>
+            </p>
             <p>
             <button id="btn_send" class="btn btn-success" onclick="App.sendCoin()" disabled="true">Send To</button>
             <input id="recipient" type="text" placeholder="0x0123456789012345678901234567890123456789"/>
