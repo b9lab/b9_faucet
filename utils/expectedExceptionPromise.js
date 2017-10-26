@@ -20,7 +20,14 @@ module.exports = function expectedExceptionPromise(actionPromise, gasToUse, time
         })
         .then(function(receipt) {
             // We are in Geth
-            assert.equal(receipt.gasUsed, gasToUse, "should have used all the gas");
+            if (typeof receipt.status !== "undefined") {
+                // Byzantium
+                console.log(receipt);
+                assert.strictEqual(receipt.status, "0x0", "should have reverted");
+            } else {
+                // Pre Byzantium
+                assert.equal(receipt.gasUsed, gasToUse, "should have used all the gas");
+            }
         })
         .catch(function(e) {
             if (e.message.indexOf("invalid opcode") > -1 ||
