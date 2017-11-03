@@ -1,9 +1,13 @@
 const ThrottledFaucet = artifacts.require("./ThrottledFaucet.sol");
 const addEvmFunctions = require("../utils/evmFunctions.js");
+const addMinerFunctions = require("../utils/minerFunctions.js");
 
 import { default as Promise } from 'bluebird';
+Promise.allNamed = require("../utils/sequentialPromiseNamed.js");
+Promise.retry = require("bluebird-retry");
 
 addEvmFunctions(web3);
+addMinerFunctions(web3);
 
 if (typeof web3.eth.getBlockPromise !== "function") {
     Promise.promisifyAll(web3.eth, { suffix: "Promise" });
@@ -13,6 +17,9 @@ if (typeof web3.version.getNodePromise !== "function") {
 }
 if (typeof web3.evm.increaseTimePromise !== "function") {
     Promise.promisifyAll(web3.evm, { suffix: "Promise" });
+}
+if (typeof web3.miner.startPromise !== "function") {
+    Promise.promisifyAll(web3.miner, { suffix: "Promise" });
 }
 
 web3.eth.getTransactionReceiptMined = require("../utils/getTransactionReceiptMined.js");
@@ -26,23 +33,52 @@ contract('ThrottledFaucet', function(accounts) {
 
     // PREPARATION
 
-    let owner, owner2, isTestRPC, giveCombi = [ 0, 1 ];
+    let owner, owner2, recipient, isTestRPC, giveCombi = [ 0, 1 ];
     const initialParams = {
         restricted: false,
         giveAway: 1000,
         delay: 60
     };
 
+    /**
+     * @param {!Number} timestamp, the timestamp that we want the latest block to get past.
+     * @returns {!Promise} yields when a block is past the timestamp.
+     */
+    function getPastTimestamp(timestamp) {
+        return web3.eth.getBlockPromise("latest")
+            .then(block => {
+                if (isTestRPC) {
+                    return web3.evm.increaseTimePromise(timestamp - block.timestamp)
+                        .then(() => web3.evm.minePromise());
+                } else {
+                    // Wait for Geth to have mined a block after the deadline
+                    return Promise.delay((timestamp - block.timestamp) * 1000)
+                        .then(() => Promise.retry(() => web3.eth.getBlockPromise("latest")
+                            .then(block => {
+                                if (block.timestamp < timestamp) {
+                                    return web3.miner.startPromise(1)
+                                        .then(() => { throw new Error("Not ready yet"); });
+                                }
+                            }),
+                            { max_tries: 100, interval: 1000, timeout: 100000 }));
+                }
+            });
+    }
+
     before("should prepare accounts", function() {
-        assert.isAtLeast(accounts.length, 2, "should have at least 2 accounts");
-        owner = accounts[ 0 ];
-        owner2 = accounts[ 1 ];
-        giveCombi[ 0 ] = { from: owner, to: owner2 };
-        giveCombi[ 1 ] = { from: owner2, to: owner };
-        return web3.eth.makeSureAreUnlocked(
-            [ owner, owner2 ])
+        assert.isAtLeast(accounts.length, 4, "should have at least 4 accounts");
+        return web3.eth.getCoinbasePromise()
+            .then(coinbase => {
+                const coinbaseIndex = accounts.indexOf(coinbase);
+                // Coinbase gets the rewards, making calculations difficut.
+                accounts.splice(coinbaseIndex, 1);
+                [owner, owner2, recipient] = accounts;
+                giveCombi[ 0 ] = { from: owner2, to: recipient };
+                giveCombi[ 1 ] = { from: recipient, to: owner2 };
+                return web3.eth.makeSureAreUnlocked([ owner, owner2, recipient ]);
+            })
             .then(() => web3.eth.makeSureHasAtLeast(
-                owner, [ owner, owner2 ], web3.toWei(2)))
+                owner, [ owner, owner2, recipient ], web3.toWei(2)))
             .then(txObject => web3.eth.getTransactionReceiptMined(txObject));
     });
 
@@ -325,14 +361,8 @@ contract('ThrottledFaucet', function(accounts) {
                                 origBal = balance;
                                 return created.giveTo(to, { from: from, value: initialParams.giveAway / 2 });
                             })
-                            .then(txObject => {
-                                if (isTestRPC) {
-                                    return web3.evm.increaseTimePromise(initialParams.delay)
-                                        .then(() => web3.evm.minePromise());
-                                } else {
-                                    return Promise.delay(initialParams.delay * 1000);
-                                }
-                            })
+                            .then(txObject => created.getNextTimestamp())
+                            .then(getPastTimestamp)
                             .then(() => created.giveTo.call(to, { from: from, value: initialParams.giveAway }))
                             .then(success => {
                                 assert.isTrue(success, "should accept");
@@ -370,7 +400,7 @@ contract('ThrottledFaucet', function(accounts) {
 
                 describe("giveMe", function() {
                     it("should giveMe when one asks case " + index, function() {
-                        let origBal, txObject;
+                        let origBal, origBlockNumber, txObject;
                         return web3.eth.getBalancePromise(from)
                             .then(balance => {
                                 origBal = balance;
@@ -472,13 +502,9 @@ contract('ThrottledFaucet', function(accounts) {
                             .then(txObject => web3.eth.addTransactionToTxObject(txObject))
                             .then(txObject => {
                                 txObject1 = txObject;
-                                if (isTestRPC) {
-                                    return web3.evm.increaseTimePromise(initialParams.delay)
-                                        .then(() => web3.evm.minePromise());
-                                } else {
-                                    return Promise.delay(initialParams.delay * 1000);
-                                }
+                                return created.getNextTimestamp();
                             })
+                            .then(getPastTimestamp)
                             .then(() => created.giveMe.call({ from: from, value: initialParams.giveAway }))
                             .then(success => {
                                 assert.isTrue(success, "should accept");

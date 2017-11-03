@@ -22,7 +22,6 @@ module.exports = function expectedExceptionPromise(actionPromise, gasToUse, time
             // We are in Geth
             if (typeof receipt.status !== "undefined") {
                 // Byzantium
-                console.log(receipt);
                 assert.strictEqual(receipt.status, "0x0", "should have reverted");
             } else {
                 // Pre Byzantium

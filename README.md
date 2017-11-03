@@ -35,3 +35,7 @@ ERROR in ./app/main.js
 Module not found: Error: Can't resolve '../build/contracts/ThrottledFaucet.json' in 'blah blah/app'
  @ ./app/main.js 11:16-59
 ```
+
+## Troubleshooting
+
+If your errors are incomplete, considering commenting out the line `reporter: 'eth-gas-reporter'` in `truffle.js`.
