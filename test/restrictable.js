@@ -19,13 +19,16 @@ contract('Restrictable', function(accounts) {
     let owner, owner2;
 
     before("should prepare accounts", function() {
+        let coinbase;
         assert.isAtLeast(accounts.length, 2, "should have at least 2 accounts");
-        owner = accounts[ 0 ];
-        owner2 = accounts[ 1 ];
-        return web3.eth.makeSureAreUnlocked(
-            [ owner, owner2 ])
+        return web3.eth.getCoinbasePromise()
+            .then(_coinbase => {
+                coinbase = _coinbase;
+                [owner, owner2 ] = accounts;
+                return web3.eth.makeSureAreUnlocked([ owner, owner2 ]);
+            })
             .then(() => web3.eth.makeSureHasAtLeast(
-                owner, [ owner, owner2 ], web3.toWei(2)))
+                coinbase, [ owner, owner2 ], web3.toWei(2)))
             .then(txObject => web3.eth.getTransactionReceiptMined(txObject));
     });
 

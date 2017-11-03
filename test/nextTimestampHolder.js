@@ -20,12 +20,16 @@ contract('NextTimestampHolder', function(accounts) {
     let owner;
 
     before("should prepare accounts", function() {
+        let coinbase;
         assert.isAtLeast(accounts.length, 1, "should have at least 1 account");
-        owner = accounts[ 0 ];
-        return web3.eth.makeSureAreUnlocked(
-            [ owner ])
+        return web3.eth.getCoinbasePromise()
+            .then(_coinbase => {
+                coinbase = _coinbase;
+                owner = accounts[ 0 ];
+                return web3.eth.makeSureAreUnlocked([ owner ]);
+            })
             .then(() => web3.eth.makeSureHasAtLeast(
-                owner, [ owner ], web3.toWei(2)))
+                coinbase, [ owner ], web3.toWei(2)))
             .then(txObject => web3.eth.getTransactionReceiptMined(txObject));
     });
 

@@ -66,9 +66,11 @@ contract('ThrottledFaucet', function(accounts) {
     }
 
     before("should prepare accounts", function() {
+        let coinbase;
         assert.isAtLeast(accounts.length, 4, "should have at least 4 accounts");
         return web3.eth.getCoinbasePromise()
-            .then(coinbase => {
+            .then(_coinbase => {
+                coinbase = _coinbase;
                 const coinbaseIndex = accounts.indexOf(coinbase);
                 // Coinbase gets the rewards, making calculations difficut.
                 accounts.splice(coinbaseIndex, 1);
@@ -78,7 +80,7 @@ contract('ThrottledFaucet', function(accounts) {
                 return web3.eth.makeSureAreUnlocked([ owner, owner2, recipient ]);
             })
             .then(() => web3.eth.makeSureHasAtLeast(
-                owner, [ owner, owner2, recipient ], web3.toWei(2)))
+                coinbase, [ owner, owner2, recipient ], web3.toWei(2)))
             .then(txObject => web3.eth.getTransactionReceiptMined(txObject));
     });
 
