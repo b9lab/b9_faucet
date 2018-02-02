@@ -91,5 +91,5 @@ td, th {
 }
 
 .owner-only {
-    visibility: "hidden";
+    display: none;
 }

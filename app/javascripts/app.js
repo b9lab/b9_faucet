@@ -206,8 +206,9 @@ window.App = {
                         } else {
                             $("#owner").attr("title", "There is no block explorer on this network");
                         }
+                        console.log(owner, window.account, owner == window.account);
                         if (owner == window.account) {
-                            $(".owner-only").css({ visibility: "visible" });
+                            $(".owner-only").css({ display: "inline-block" });
                         }
                         return instance.getGiveAway();
                     })
