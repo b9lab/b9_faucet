@@ -7,6 +7,7 @@
     <link href='./css/app.css' rel='stylesheet' type='text/css'>
     <link href='./css/bootstrap.min.css' rel='stylesheet' type='text/css'>
     <script src="./app.js"></script>
+    <script src="js/language.js"></script>
 </head>
 <body>
     <div class="navbar-header">
@@ -16,6 +17,8 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li><a href="https://academy.b9lab.com">Check out our courses!</a></li>
+      </ul>
+      <select class="form-control" id="languageSelection"><option>English</option></select>
     </div><!--/.nav-collapse -->
 
     <br/>
@@ -83,6 +86,9 @@
             <p>Owner: <a id="owner">Loading...</a></p>
 
         </div>
+        <script>
+            languageSelection.init();
+        </script>
     </div>
 </body>
 </html>

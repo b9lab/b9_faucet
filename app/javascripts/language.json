@@ -1,0 +1,44 @@
+{
+    "languages": {
+        "en": {
+            "academy-link": "Check out our courses!",
+            "title": "Throttled Testnet Faucet",
+            "withdraw-header": "Withdraw",
+            "withdraw-description": "Please Wait: x Seconds",
+            "withdraw-giveaway": "GiveAway:",
+            "withdraw-button": "Send To",
+            "info-header": "Info",
+            "info-address": "Address",
+            "info-owner": "Owner",
+            "err": "Error...",
+            "err-1": "There is no block explorer on this network",
+            "err-2": "Mimicking a failed attempt at connecting to Ethereum",
+            "err-3": "Failed to connect to Ethereum.",
+            "tx-status-wait": "initiating transaction... (please wait)",
+            "tx-status-err1": "no transaction sent, it will fail anyway",
+            "tx-status-err2": "error sending coin; see log.",
+            "donate-status-wait": "initiating transaction... (please wait)",
+            "donate-status-err1": "error donation; see log. "
+        },
+        "es": {
+            "academy-link": "¡Checa nuestros cursos!",
+            "title": "Red limitada de prueba faucet",
+            "withdraw-header": "Retiro",
+            "withdraw-description": "Por favor esperé: x segundos",
+            "withdraw-giveaway": "Da:",
+            "withdraw-button": "Envía a",
+            "info-header": "Información",
+            "info-address": "Dirección",
+            "info-owner": "Dueño",
+            "err": "Error...",
+            "err-1": "No hay ningún explorador de bloques en esta red",
+            "err-2": "Imitando un intento fallido de conectar con Ethereum",
+            "err-3": "Fallo en la conexión con Ethereum.",
+            "tx-status-wait": "inicializando transacción... (por favor espere)",
+            "tx-status-err1": "ninguna transacción fue mandada, va a fallar de todos modos",
+            "tx-status-err2": "error mandando moneda; vea log.",
+            "donate-status-wait": "iniciando transacción... (por favor espere)",
+            "donate-status-err1": "error de contribución; vea log."
+        }
+    }
+}

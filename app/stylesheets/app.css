@@ -93,3 +93,10 @@ td, th {
 .owner-only {
     display: none;
 }
+
+
+#languageSelection {
+    float: right;
+    margin-top: 7px;
+    width: auto;
+}
