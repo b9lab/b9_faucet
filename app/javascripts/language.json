@@ -68,7 +68,7 @@
             "info-owner": "Besitzer",
             "err": "Fehler",
             "err-1": "Es wurde kein Blockexplorer gefunden",
-            "err-2": "Immitierte einen Fehler beim Verbinden zu Etehereum",
+            "err-2": "Imitierte einen Fehler beim Verbinden zu Ethereum",
             "err-3": "Fehler beim Verbinden zu Ethereum.",
             "tx-status-wait": "beginne Transaktion... (bitte warten)",
             "tx-status-err1": "keine Transaktion gesendet, wird fehlschlagen.",
@@ -109,6 +109,33 @@
             "status-loading": "Chargement...",
             "withdraw-button2": "Changer",
             "donate-title": "Faire un don"
+        },
+        "tr": {
+            "academy-link": "Kurslarımıza bakın!",
+            "title": "Düşük akışlı test dağıtıcısı",
+            "withdraw-title": "Doldur",
+            "withdraw-wait": "Lütfen bekleyin",
+            "withdraw-giveaway": "Verim:",
+            "withdraw-button1": "Gönder ",
+            "info-header": "Bilgi",
+            "info-address": "Adres",
+            "info-owner": "Sahibi",
+            "err": "Hata",
+            "err-1": "Blockexplorer bulunamadı",
+            "err-2": "Ethereuma bağlanma hatasi taklit et",
+            "err-3": "Ethereuma bağlanma hatasi.",
+            "tx-status-wait": "Transferi başlat... (lütfen bekleyin)",
+            "tx-status-err1": "Transfer olmadi.",
+            "tx-status-err2": "Ether gönderme hatasi, kayıda bakin.",
+            "donate-status-err1": "Bağışlama hatasi, kayıda bakin.",
+            "status-done": "Tamam",
+            "seconds": "Saniye",
+            "tx": "Transfer",
+            "page-title": "Düşük akışlı test dağıtıcısı - bir B9Lab DApp",
+            "status-connecting": "Ethereuma bağlan",
+            "status-loading": "Yükleniyor...",
+            "withdraw-button2": "Değiştir",
+            "donate-title": "Bağışla"
         }
     }
 }

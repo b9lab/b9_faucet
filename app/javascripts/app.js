@@ -146,6 +146,7 @@ window.App = {
         $(".err").text(languageSelection.getTranslatedString("err"));
         $("#donate-title").text(languageSelection.getTranslatedString("donate-title"));
         $("#donate-tx").text(languageSelection.getTranslatedString("tx"));
+        $("#info-header").text(languageSelection.getTranslatedString("info-header"));
         $("#info-balance").text(languageSelection.getTranslatedString("info-header"));
         $("#info-address").text(languageSelection.getTranslatedString("info-address"));
         $("#info-owner").text(languageSelection.getTranslatedString("info-owner"));
