@@ -44,8 +44,8 @@
         <br/>
 
         <h4 id="title_your_balance" style="display:none;">
-            You <span style="font-size: 50%;">( <a id="your_address">Loading...</a> )</span>
-            have <span id="your_balance">Loading...</span> Ξ
+            <span id="text-you">You</span> <span style="font-size: 50%;">( <a id="your_address">Loading...</a> )</span>
+            <span id="text-have">have</span> <span id="your_balance">Loading...</span> Ξ
         </h4>
 
         <div id="faucet_area" style="display:none;">
@@ -74,7 +74,7 @@
 
                 <h3 id="donate-title">Donate</h3>
                 <p>
-                <button class="btn btn-success" onclick="App.donate()">Credit</button>
+                <button id="btn-credit" class="btn btn-success" onclick="App.donate()">Credit</button>
                 <input id="donation" type="number" placeholder="a number"/> Ξ 
                 </p>
                 <p id="donate_tx_para" style="visibility:hidden;">
@@ -92,12 +92,7 @@
             <p><span id="info-owner">Owner</span>: <a id="owner">Loading...</a></p>
 
         </div>
-        <script>
-            languageSelection.init().then(function() {
-                document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
-            });
-            
-            
+        <script>            
             function changeLanguage(value) {
                 window.location = "?lang=" + value;
             }

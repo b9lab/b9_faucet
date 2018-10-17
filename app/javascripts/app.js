@@ -44,7 +44,10 @@ const etherscanUrls = {
 let account;
 
 window.addEventListener('load', function() {
-    window.App.start();
+    languageSelection.init().then(function() {
+        window.App.start();
+    })
+
 });
 
 window.App = {
@@ -131,23 +134,27 @@ window.App = {
      * @returns {!Promise}
      */
     initUI: function() {
+        document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
         $(document).prop('title', languageSelection.getTranslatedString("page-title"));
         $("#academy-link").text(languageSelection.getTranslatedString("academy-link"));
         $("#web3_status").text(languageSelection.getTranslatedString("status-connecting"));
         $("#give-away-title").text(languageSelection.getTranslatedString("withdraw-giveaway"));
         $("#wait-title").text(languageSelection.getTranslatedString("withdraw-wait"));
         $("#coolDown").text(languageSelection.getTranslatedString("status-loading"));
+        $("#text-you").text(languageSelection.getTranslatedString("text-amount1"));
+        $("#text-have").text(languageSelection.getTranslatedString("text-amount2"));
         $("#title, #title_deleted").text(languageSelection.getTranslatedString("title"));
         $("#your_address, #your_balance, #faucet_balance, #address, #owner").text(languageSelection.getTranslatedString("status-loading"));
         $("#withdraw-title").text(languageSelection.getTranslatedString("withdraw-title"));
         $("#btn-change").text(languageSelection.getTranslatedString("withdraw-button2"));
         $("#btn_send").text(languageSelection.getTranslatedString("withdraw-button1"));
+        $("#btn-credit").text(languageSelection.getTranslatedString("btn-credit"));
         $(".seconds").text(languageSelection.getTranslatedString("seconds"));
         $(".err").text(languageSelection.getTranslatedString("err"));
         $("#donate-title").text(languageSelection.getTranslatedString("donate-title"));
         $("#donate-tx").text(languageSelection.getTranslatedString("tx"));
         $("#info-header").text(languageSelection.getTranslatedString("info-header"));
-        $("#info-balance").text(languageSelection.getTranslatedString("info-header"));
+        $("#info-balance").text(languageSelection.getTranslatedString("info-balance"));
         $("#info-address").text(languageSelection.getTranslatedString("info-address"));
         $("#info-owner").text(languageSelection.getTranslatedString("info-owner"));
     },

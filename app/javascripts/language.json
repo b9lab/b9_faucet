@@ -25,8 +25,11 @@
             "status-connecting": "Connecting to Ethereum",
             "status-loading": "Loading...",
             "withdraw-button2": "Change",
-            "donate-title": "Donate"
-
+            "donate-title": "Donate",
+            "btn-credit": "Credit",
+            "text-amount1": "You",
+            "text-amount2": "have",
+            "info-balance": "Balance"
         },
         "es": {
             "academy-link": "¡Checa nuestros cursos!",
@@ -53,8 +56,11 @@
             "status-connecting": "Conectando a Ethereum",
             "status-loading": "Cargando...",
             "withdraw-button2": "Cambio",
-            "donate-title": "Contribuía"
-
+            "donate-title": "Contribuía",
+            "btn-credit": "pagar",
+            "text-amount1": "tú",
+            "text-amount2": "tienes",
+            "info-balance": "crédito"
         },
         "de": {
             "academy-link": "Besuche unsere Kurse!",
@@ -81,7 +87,11 @@
             "status-connecting": "Verbinde zu Ethereum",
             "status-loading": "Lade...",
             "withdraw-button2": "Ändern",
-            "donate-title": "Spenden"
+            "donate-title": "Spenden",
+            "btn-credit": "Zahlen",
+            "text-amount1": "Sie ",
+            "text-amount2": "haben",
+            "info-balance": "Guthaben"
         },
         "fr": {
             "academy-link": "Découvrez nos cours!",
@@ -108,7 +118,11 @@
             "status-connecting": "En cours de connexion à Ethereum",
             "status-loading": "Chargement...",
             "withdraw-button2": "Changer",
-            "donate-title": "Faire un don"
+            "donate-title": "Faire un don",
+            "btn-credit": "Payer",
+            "text-amount1": "tu",
+            "text-amount2": "as",
+            "info-balance": "Avoir"
         },
         "tr": {
             "academy-link": "Kurslarımıza bakın!",
@@ -135,7 +149,11 @@
             "status-connecting": "Ethereuma bağlan",
             "status-loading": "Yükleniyor...",
             "withdraw-button2": "Değiştir",
-            "donate-title": "Bağışla"
+            "donate-title": "Bağışla",
+            "btn-credit": "Öde",
+            "text-amount1": "Sizde",
+            "text-amount2": "",
+            "info-balance": "var"
         }
     }
 }
