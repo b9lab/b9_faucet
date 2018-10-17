@@ -120,9 +120,9 @@
             "withdraw-button2": "Changer",
             "donate-title": "Faire un don",
             "btn-credit": "Payer",
-            "text-amount1": "tu",
-            "text-amount2": "as",
-            "info-balance": "Avoir"
+            "text-amount1": "vous",
+            "text-amount2": "avont",
+            "info-balance": "Solde"
         },
         "tr": {
             "academy-link": "Kurslarımıza bakın!",
