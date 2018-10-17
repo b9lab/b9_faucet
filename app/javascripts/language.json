@@ -21,7 +21,7 @@
             "status-done": "done",
             "seconds": "seconds",
             "tx": "transaction",
-            "page-title": "- A B9Lab DApp",
+            "page-title": "Throttled Testnet Faucet - A B9Lab DApp",
             "status-connecting": "Connecting to Ethereum",
             "status-loading": "Loading...",
             "withdraw-button2": "Change",
@@ -82,6 +82,33 @@
             "status-loading": "Lade...",
             "withdraw-button2": "Ändern",
             "donate-title": "Spenden"
+        },
+        "fr": {
+            "academy-link": "Check out our courses!",
+            "title": "Throttled Testnet Faucet",
+            "withdraw-title": "Withdraw",
+            "withdraw-wait": "Please Wait",
+            "withdraw-giveaway": "GiveAway",
+            "withdraw-button1": "Send To",
+            "info-header": "Info",
+            "info-address": "Address",
+            "info-owner": "Owner",
+            "err": "Error",
+            "err-1": "There is no block explorer on this network",
+            "err-2": "Mimicking a failed attempt at connecting to Ethereum",
+            "err-3": "Failed to connect to Ethereum.",
+            "tx-status-wait": "initiating transaction... (please wait)",
+            "tx-status-err1": "no transaction sent, it will fail anyway",
+            "tx-status-err2": "error sending coin; see log.",
+            "donate-status-err1": "error donation; see log. ",
+            "status-done": "done",
+            "seconds": "seconds",
+            "tx": "transaction",
+            "page-title": "Throttled Testnet Faucet - A B9Lab DApp",
+            "status-connecting": "Connecting to Ethereum",
+            "status-loading": "Loading...",
+            "withdraw-button2": "Change",
+            "donate-title": "Donate"
         }
     }
 }
