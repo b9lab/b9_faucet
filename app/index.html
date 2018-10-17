@@ -9,7 +9,7 @@
     <script src="./app.js"></script>
     <script src="js/language.js"></script>
 </head>
-<body>
+<body> 
     <div class="navbar-header">
       <a class="navbar-brand" href="https://academy.b9lab.com">
       <img src="images/logo-open-edx.png" id="logo"></a>
@@ -92,12 +92,11 @@
 
         </div>
         <script>
-
-            languageSelection.init();
-
-            // set the select box to actual language
-            document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
-
+            languageSelection.init().then(function() {
+                document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
+            });
+            
+            
             function changeLanguage(value) {
                 window.location = "?lang=" + value;
             }
