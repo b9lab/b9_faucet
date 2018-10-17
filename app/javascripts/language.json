@@ -58,7 +58,7 @@
         },
         "de": {
             "academy-link": "Besuche unsere Kurse!",
-            "title": "Throttled Testnet Faucet",
+            "title": "Durchflussreduzierter Testnetz-Spender",
             "withdraw-title": "Abheben",
             "withdraw-wait": "Bitte warten",
             "withdraw-giveaway": "Ausgabe:",
@@ -77,7 +77,7 @@
             "status-done": "fertig",
             "seconds": "Sekunden",
             "tx": "Transaktion",
-            "page-title": "Throttled Testnet Faucet - eine B9Lab DApp",
+            "page-title": "Durchflussreduzierter Testnetz-Spender - eine B9Lab DApp",
             "status-connecting": "Verbinde zu Ethereum",
             "status-loading": "Lade...",
             "withdraw-button2": "Ändern",
