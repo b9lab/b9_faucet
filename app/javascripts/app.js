@@ -157,6 +157,25 @@ window.App = {
         $("#info-balance").text(languageSelection.getTranslatedString("info-balance"));
         $("#info-address").text(languageSelection.getTranslatedString("info-address"));
         $("#info-owner").text(languageSelection.getTranslatedString("info-owner"));
+
+        // fetch faucet status from (public) status api
+        fetch("https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks", {
+                method: 'POST',
+                headers: {
+                    'x-api-key': 'YNJhZDsdUX7PBylg8HwVaMSgf5jOWGP5houZipEa'
+                }
+            }).then(function(res) {
+                return res.json()
+            })
+            .then(function(response) {
+                if (response.allRunning) {
+                    $("#faucet-status").css("color", "#18bc9c");
+                    $("#faucet-status").text("ONLINE");
+                } else {
+                    $("#faucet-status").css("color", "red");
+                    $("#faucet-status").text("OFFLINE");
+                }
+            });
     },
 
     /**
