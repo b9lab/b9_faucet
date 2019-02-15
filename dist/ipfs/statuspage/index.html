@@ -87,7 +87,7 @@
             },
             url: "https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks"
         }).done(function(data) {
-            setStatus("#status-all", data.allRunning, "");
+            setStatus("#status-all", data.allRunning, data.allRunning ? "Online" : "Offline");
             setStatus("#status-web", data.web.running, "Status: " + data.web.result.toString());
             setStatus("#status-geth", data.geth.running, data.geth.result);
             setStatus("#status-cert", data.cert.valid, data.cert.result);
