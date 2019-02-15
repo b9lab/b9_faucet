@@ -1,9 +1,19 @@
 // Import libraries we need.
-import { default as BigNumber } from 'bignumber.js';
-import { default as Web3 } from 'web3';
-import { default as contract } from 'truffle-contract'
-import { default as Promise } from 'bluebird';
-import { default as $ } from 'jquery';
+import {
+    default as BigNumber
+} from 'bignumber.js';
+import {
+    default as Web3
+} from 'web3';
+import {
+    default as contract
+} from 'truffle-contract'
+import {
+    default as Promise
+} from 'bluebird';
+import {
+    default as $
+} from 'jquery';
 
 // Import our contract artifacts and turn them into usable abstractions.
 import throttledFaucetArtifacts from '../../build/contracts/ThrottledFaucet.json'
@@ -34,7 +44,10 @@ const etherscanUrls = {
 let account;
 
 window.addEventListener('load', function() {
-    window.App.start();
+    languageSelection.init().then(function() {
+        window.App.start();
+    })
+
 });
 
 window.App = {
@@ -75,10 +88,15 @@ window.App = {
      */
     start: function() {
         const self = this;
+        this.initUI();
         return App.findBestWeb3()
             .then(web3Instance => {
-                $("#web3_off").css({ display: "none" });
-                $("#web3_on").css({ display: "block" });
+                $("#web3_off").css({
+                    display: "none"
+                });
+                $("#web3_on").css({
+                    display: "block"
+                });
                 ThrottledFaucet.setProvider(web3.currentProvider);
 
                 // Get the initial account balance so it can be displayed.
@@ -89,16 +107,20 @@ window.App = {
                     window.account = undefined;
                     console.log("No account found");
                 } else {
-                    window.account = accs[ 0 ];
-                    $("#title_your_balance").css({ display: "block" });
+                    window.account = accs[0];
+                    $("#title_your_balance").css({
+                        display: "block"
+                    });
                     $("#your_address").html(window.account);
                     if (typeof self.params.etherscanUrl !== "undefined") {
                         $("#your_address").attr("href", self.params.etherscanUrl + "address/" + window.account);
                     } else {
-                        $("#your_address").attr("title", "There is no block explorer on this network");
+                        $("#your_address").attr("title", languageSelection.getTranslatedString("err-1"));
                     }
                     $("#recipient").val(window.account);
-                    $("#donate_area").css({ display: "block" });
+                    $("#donate_area").css({
+                        display: "block"
+                    });
                 }
                 return self.refreshBalances();
             })
@@ -106,6 +128,54 @@ window.App = {
             .then(() => self.listenToLogPaid())
             .then(() => self.countDown())
             .catch(console.error);
+    },
+
+    /**
+     * @returns {!Promise}
+     */
+    initUI: function() {
+        document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
+        $(document).prop('title', languageSelection.getTranslatedString("page-title"));
+        $("#academy-link").text(languageSelection.getTranslatedString("academy-link"));
+        $("#web3_status").text(languageSelection.getTranslatedString("status-connecting"));
+        $("#give-away-title").text(languageSelection.getTranslatedString("withdraw-giveaway"));
+        $("#wait-title").text(languageSelection.getTranslatedString("withdraw-wait"));
+        $("#coolDown").text(languageSelection.getTranslatedString("status-loading"));
+        $("#text-you").text(languageSelection.getTranslatedString("text-amount1"));
+        $("#text-have").text(languageSelection.getTranslatedString("text-amount2"));
+        $("#title, #title_deleted").text(languageSelection.getTranslatedString("title"));
+        $("#your_address, #your_balance, #faucet_balance, #address, #owner").text(languageSelection.getTranslatedString("status-loading"));
+        $("#withdraw-title").text(languageSelection.getTranslatedString("withdraw-title"));
+        $("#btn-change").text(languageSelection.getTranslatedString("withdraw-button2"));
+        $("#btn_send").text(languageSelection.getTranslatedString("withdraw-button1"));
+        $("#btn-credit").text(languageSelection.getTranslatedString("btn-credit"));
+        $(".seconds").text(languageSelection.getTranslatedString("seconds"));
+        $(".err").text(languageSelection.getTranslatedString("err"));
+        $("#donate-title").text(languageSelection.getTranslatedString("donate-title"));
+        $("#donate-tx").text(languageSelection.getTranslatedString("tx"));
+        $("#info-header").text(languageSelection.getTranslatedString("info-header"));
+        $("#info-balance").text(languageSelection.getTranslatedString("info-balance"));
+        $("#info-address").text(languageSelection.getTranslatedString("info-address"));
+        $("#info-owner").text(languageSelection.getTranslatedString("info-owner"));
+
+        // fetch faucet status from (public) status api
+        fetch("https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks", {
+                method: 'POST',
+                headers: {
+                    'x-api-key': 'YNJhZDsdUX7PBylg8HwVaMSgf5jOWGP5houZipEa'
+                }
+            }).then(function(res) {
+                return res.json()
+            })
+            .then(function(response) {
+                if (response.allRunning) {
+                    $("#faucet-status").css("color", "#18bc9c");
+                    $("#faucet-status").text("ONLINE");
+                } else {
+                    $("#faucet-status").css("color", "red");
+                    $("#faucet-status").text("OFFLINE");
+                }
+            });
     },
 
     /**
@@ -122,10 +192,10 @@ window.App = {
         } else {
             promise = rpcEndPoints.reduce(
                 (promiseAttempt, rpcEndPoint) => promiseAttempt
-                    .catch(error => Promise.resolve(new Web3(new Web3.providers.HttpProvider(rpcEndPoint)))
-                        .then(web3Instance => App.prepareWeb3(web3Instance))
-                    ),
-                Promise.reject(new Error("Mimicking a failed attempt at connecting to Ethereum"))
+                .catch(error => Promise.resolve(new Web3(new Web3.providers.HttpProvider(rpcEndPoint)))
+                    .then(web3Instance => App.prepareWeb3(web3Instance))
+                ),
+                Promise.reject(new Error(languageSelection.getTranslatedString("err-2")))
             );
         }
 
@@ -137,7 +207,7 @@ window.App = {
             })
             .catch(error => {
                 console.error(error);
-                $("#web3_status").html("Failed to connect to Ethereum.");
+                $("#web3_status").html(languageSelection.getTranslatedString("err-3"));
                 throw error;
             });
     },
@@ -151,7 +221,7 @@ window.App = {
         return web3Instance.version.getNetworkPromise()
             .then(network => {
                 self.params.networkId = network;
-                self.params.etherscanUrl = etherscanUrls[ network ];
+                self.params.etherscanUrl = etherscanUrls[network];
                 return web3Instance;
             });
     },
@@ -160,9 +230,15 @@ window.App = {
      * @returns {!Web3}
      */
     promisifyWeb3: function(web3Instance) {
-        Promise.promisifyAll(web3Instance.eth, { suffix: "Promise" });
-        Promise.promisifyAll(web3Instance.version, { suffix: "Promise" });
-        Promise.promisifyAll(web3Instance.net, { suffix: "Promise" });
+        Promise.promisifyAll(web3Instance.eth, {
+            suffix: "Promise"
+        });
+        Promise.promisifyAll(web3Instance.version, {
+            suffix: "Promise"
+        });
+        Promise.promisifyAll(web3Instance.net, {
+            suffix: "Promise"
+        });
         web3Instance.eth.getTransactionReceiptMined = require("../../utils/getTransactionReceiptMined.js");
         return web3Instance;
     },
@@ -183,19 +259,25 @@ window.App = {
         return Promise.delay(1) // This delay circumvents a Mist bug
             .then(() => ThrottledFaucet.deployed())
             .then(instance => {
-                $("#title_deleted").css({ display: "none" });
-                $("#title").css({ display: "inline" });
-                $("#faucet_area").css({ display: "block" });
+                $("#title_deleted").css({
+                    display: "none"
+                });
+                $("#title").css({
+                    display: "inline"
+                });
+                $("#faucet_area").css({
+                    display: "block"
+                });
                 $("#address").html(instance.address);
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#address").attr("href", self.params.etherscanUrl + "address/" + instance.address);
                 } else {
-                    $("#address").attr("title", "There is no block explorer on this network");
+                    $("#address").attr("title", languageSelection.getTranslatedString("err-1"));
                 }
                 return instance.getOwner()
                     .catch(error => {
                         console.error(error);
-                        $("#owner").html("Error...");
+                        $("#owner").html(languageSelection.getTranslatedString("err"));
                         throw error;
                     })
                     .then(owner => {
@@ -204,17 +286,19 @@ window.App = {
                         if (typeof self.params.etherscanUrl !== "undefined") {
                             $("#owner").attr("href", self.params.etherscanUrl + "address/" + owner);
                         } else {
-                            $("#owner").attr("title", "There is no block explorer on this network");
+                            $("#owner").attr("title", languageSelection.getTranslatedString("err-1"));
                         }
                         console.log(owner, window.account, owner == window.account);
                         if (owner == window.account) {
-                            $(".owner-only").css({ display: "inline-block" });
+                            $(".owner-only").css({
+                                display: "inline-block"
+                            });
                         }
                         return instance.getGiveAway();
                     })
                     .catch(error => {
                         console.error(error);
-                        $("#give_away").html("Error...");
+                        $("#give_away").html(languageSelection.getTranslatedString("err"));
                         throw error;
                     })
                     .then(giveAway => {
@@ -238,7 +322,7 @@ window.App = {
                 })
                 .catch(error => {
                     console.error(error);
-                    $("#your_balance").html("Error...");
+                    $("#your_balance").html(languageSelection.getTranslatedString("err"));
                     throw error;
                 });
         } else {
@@ -251,7 +335,7 @@ window.App = {
             .then(balance => $("#faucet_balance").html(self.fromWei(balance).toString(10)))
             .catch(error => {
                 console.error(error);
-                $("#faucet_balance").html("Error...");
+                $("#faucet_balance").html(languageSelection.getTranslatedString("err"));
                 throw error;
             });
     },
@@ -261,14 +345,16 @@ window.App = {
      */
     listenToLogPaid: function() {
         const self = this;
-        const promise = typeof self.params.logPaidFilter !== "undefined"
-            ? self.params.logPaidFilter.stopWatchingPromise()
-            : Promise.resolve();
+        const promise = typeof self.params.logPaidFilter !== "undefined" ?
+            self.params.logPaidFilter.stopWatchingPromise() :
+            Promise.resolve();
         return promise
             .then(ThrottledFaucet.deployed)
             .then(instance => {
                 const filter = instance.LogPaid({}, {});
-                Promise.promisifyAll(filter, { suffix: "Promise" });
+                Promise.promisifyAll(filter, {
+                    suffix: "Promise"
+                });
                 self.params.logPaidFilter = filter;
                 return filter.watch((error, log) => {
                     self.countDown();
@@ -290,7 +376,7 @@ window.App = {
 
         $("#btn_send").attr("disabled", true);
         $("#send_tx").html("");
-        $("#send_tx_status").html("initiating transaction... (please wait)");
+        $("#send_tx_status").html(languageSelection.getTranslatedString("tx-status-wait"));
         $("#send_tx_para").css("visibility", "visible");
         $("#send_tx_error_para").css("visibility", "hidden");
         $("#send_tx_error").html("N/A");
@@ -300,14 +386,18 @@ window.App = {
                 instance = _instance;
                 console.log(self.params.owner === window.account);
                 if (self.params.owner === window.account && typeof window.account !== "undefined") {
-                    return instance.giveTo.call(recipient, { from: window.account })
+                    return instance.giveTo.call(recipient, {
+                            from: window.account
+                        })
                         .then(success => {
                             if (!success) {
                                 $("#btn_send").attr("disabled", false);
-                                $("#send_tx_status").html("no transaction sent, it will fail anyway");
+                                $("#send_tx_status").html(languageSelection.getTranslatedString("tx-status-err1"));
                                 throw new Error("it will fail anyway");
                             }
-                            return instance.giveTo.sendTransaction(recipient, { from: window.account });
+                            return instance.giveTo.sendTransaction(recipient, {
+                                from: window.account
+                            });
                         });
                 } else {
                     return self.lambdaGiveTo(recipient);
@@ -319,7 +409,7 @@ window.App = {
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#send_tx").attr("href", self.params.etherscanUrl + "tx/" + txHash);
                 } else {
-                    $("#send_tx").attr("title", "There is no block explorer on this network");
+                    $("#send_tx").attr("title", languageSelection.getTranslatedString("err-1"));
                 }
                 return web3.eth.getTransactionReceiptMined(txHash);
             })
@@ -336,7 +426,7 @@ window.App = {
             .catch(function(error) {
                 console.error(error);
                 $("#btn_send").attr("disabled", false);
-                $("#send_tx_error").html("error sending coin; see log. " + error);
+                $("#send_tx_error").html(languageSelection.getTranslatedString("tx-status-err2") + " " + error);
                 $("#send_tx_error_para").css("visibility", "visible");
             });
     },
@@ -372,7 +462,7 @@ window.App = {
             })
             .catch(error => {
                 console.error(error);
-                $("#coolDown").html("Error...");
+                $("#coolDown").html(languageSelection.getTranslatedString("err"));
                 throw error;
             });
     },
@@ -398,7 +488,7 @@ window.App = {
                         console.log(data);
                         resolve(data.txHash);
                     },
-                    url: faucetUrls[ self.params.networkId ]
+                    url: faucetUrls[self.params.networkId]
                 });
             } catch (error) {
                 reject(error);
@@ -414,7 +504,7 @@ window.App = {
         const amount = $("#donation").val();
 
         $("#donate_tx").html("");
-        $("#donate_tx_status").html("initiating transaction... (please wait)");
+        $("#donate_tx_status").html(languageSelection.getTranslatedString("tx-status-wait"));
         $("#donate_tx_para").css("visibility", "visible");
         $("#donate_tx_error_para").css("visibility", "hidden");
         $("#donate_tx_error").html("N/A");
@@ -434,7 +524,7 @@ window.App = {
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#donate_tx").attr("href", self.params.etherscanUrl + "tx/" + txHash);
                 } else {
-                    $("#donate_tx").attr("title", "There is no block explorer on this network");
+                    $("#donate_tx").attr("title", languageSelection.getTranslatedString("err-1"));
                 }
                 return web3.eth.getTransactionReceiptMined(txHash);
             })
@@ -442,13 +532,13 @@ window.App = {
                 if (receipt.gasUsed == 100000) {
                     throw new Error("donation was not sent for internal reasons");
                 }
-                $("#donate_tx_status").html("done");
+                $("#donate_tx_status").html(languageSelection.getTranslatedString("status-done"));
                 return Promise.delay(5000); // To circumvent a bug where balance is not updated yet
             })
             .then(() => self.refreshBalances())
             .catch(function(error) {
                 console.error(error);
-                $("#donate_tx_error").html("error donation; see log. " + error);
+                $("#donate_tx_error").html(languageSelection.getTranslatedString("donate-status-err1") + error);
                 $("#donate_tx_error_para").css("visibility", "visible");
             });
     },
@@ -466,7 +556,9 @@ window.App = {
         }
 
         return ThrottledFaucet.deployed()
-            .then(instance => instance.setGiveAway(web3.toWei(amount), { from: window.account }))
+            .then(instance => instance.setGiveAway(web3.toWei(amount), {
+                from: window.account
+            }))
             .then(txObj => {
                 console.log(txObj);
                 return self.refreshStatics();

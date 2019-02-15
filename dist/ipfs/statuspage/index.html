@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+
+    <link href="./style.css" rel="stylesheet" type="text/css">
+
+    <title>Faucet Health Check</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark">
+        <a class="navbar-brand" href="https://academy.b9lab.com/">
+            <img id="logo" src="./logo-open-edx.png" alt="">
+        </a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="https://academy.b9lab.com/">Check out our courses!<span class="sr-only">Check out our courses!</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://ipfs.io/ipns/faucet.ipns.b9lab.com/">Faucet Page<span class="sr-only">Faucet Page</span></a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <br>
+        <h1>Faucet Health Check</h1>
+        <hr>
+        <br>
+        <h2>Status</h2>
+        <p id="status-all">Loading...</p>
+        <br>
+        <h2>Components</h2>
+        <hr>
+        <div class="row">
+            <div class="col-sm-4">
+                <h3>Web</h3>
+                <p id="status-web"></p>
+            </div>
+            <div class="col-sm-4">
+                <h3>Geth</h3>
+                <p id="status-geth"></p>
+            </div>
+            <div class="col-sm-4">
+                <h3>Cert</h3>
+                <p id="status-cert"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script>
+        function setStatus(elmId, working, text) {
+            if (working) {
+                $(elmId).toggleClass("success");
+            } else {
+                $(elmId).toggleClass("failure");
+            }
+            $(elmId).text(text);
+        }
+
+
+        $.ajax({
+            type: "GET",
+            headers: {
+                "x-api-key": "0NfFKyblcT8ppa2GXNWs9aKnAH4jytDu3hO5maYh"
+            },
+            url: "https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks"
+        }).done(function(data) {
+            setStatus("#status-all", data.allRunning, data.allRunning ? "Online" : "Impaired");
+            setStatus("#status-web", data.web.running, "Status: " + data.web.result.toString());
+            setStatus("#status-geth", data.geth.running, data.geth.result);
+            setStatus("#status-cert", data.cert.valid, data.cert.result);
+        });
+    </script>
+</body>
+
+</html>

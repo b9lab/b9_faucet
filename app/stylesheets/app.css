@@ -93,3 +93,21 @@ td, th {
 .owner-only {
     display: none;
 }
+
+#languageSelection {
+    float: right;
+    margin-top: 7px;
+    width: auto;
+}
+
+
+#faucet-status-panel {
+    line-height: 60px;
+    color: black;
+    background: white;
+    padding: 13.5px;
+}
+
+#faucet-status {
+    color: orange;
+}
