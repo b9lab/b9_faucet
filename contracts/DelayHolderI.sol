@@ -1,4 +1,4 @@
-pragma solidity 0.4.11;
+pragma solidity 0.4.13;
 
 contract DelayHolderI {
     event LogDelayChanged(uint oldDelay, uint newDelay);

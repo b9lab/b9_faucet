@@ -1,4 +1,4 @@
-pragma solidity 0.4.11;
+pragma solidity 0.4.13;
 
 import "./OwnedI.sol";
 import "./RestrictableI.sol";
@@ -10,9 +10,7 @@ contract ThrottledFaucetI is OwnedI, RestrictableI, GiveAwayHolderI, DelayHolder
     event LogPaid(address indexed who, uint amount);
 
     modifier whenAllowed {
-        if (isRestricted() && msg.sender != getOwner()) {
-            throw;
-        }
+        require(!isRestricted() || msg.sender == getOwner());
         _;
     }
 

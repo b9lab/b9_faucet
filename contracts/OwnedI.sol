@@ -1,12 +1,10 @@
-pragma solidity 0.4.11;
+pragma solidity 0.4.13;
 
 contract OwnedI {
     event LogOwnerChanged(address indexed oldOwner, address indexed newOwner);
 
     modifier fromOwner {
-        if (msg.sender != getOwner()) {
-            throw;
-        }
+        require(msg.sender == getOwner());
         _;
     }
 

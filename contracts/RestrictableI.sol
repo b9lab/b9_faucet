@@ -1,12 +1,10 @@
-pragma solidity 0.4.11;
+pragma solidity 0.4.13;
 
 contract RestrictableI {
     event LogRestrictedChanged(bool oldRestricted, bool newRestricted);
 
     modifier whenNotRestricted {
-        if (isRestricted()) {
-            throw;
-        }
+        require(!isRestricted());
         _;
     }
 

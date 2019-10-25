@@ -1,4 +1,4 @@
-pragma solidity 0.4.11;
+pragma solidity 0.4.13;
 
 import "./OwnedI.sol";
 
@@ -19,9 +19,7 @@ contract Owned is OwnedI {
     function setOwner(address newOwner) fromOwner 
         returns (bool success)
     {
-        if (newOwner == 0) {
-            throw;
-        }
+        require(newOwner != 0);
         address currentOwner = owner;
         if (currentOwner != newOwner) {
             LogOwnerChanged(currentOwner, newOwner);

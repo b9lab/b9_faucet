@@ -1,4 +1,4 @@
-pragma solidity 0.4.11;
+pragma solidity 0.4.13;
 
 contract GiveAwayHolderI {
     event LogGiveAwayChanged(uint oldGiveAway, uint newGiveAway);
