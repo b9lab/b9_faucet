@@ -43,11 +43,9 @@ const etherscanUrls = {
 // For application bootstrapping, check out window.addEventListener below.
 let account;
 
-window.addEventListener('load', function() {
-    languageSelection.init().then(function() {
-        window.App.start();
-    })
-
+window.addEventListener('load', async function() {
+    await languageSelection.init();
+    await window.App.start();
 });
 
 window.App = {
@@ -88,15 +86,29 @@ window.App = {
      */
     start: function() {
         const self = this;
+        // Extend jQuery with our language translator.
+        $.fn.extend({
+            textByKey: function(textKey) {
+                return this.text(languageSelection.getTranslatedString(textKey));
+            },
+            replaceTextByKey: function() {
+                this.each((index, element) => {
+                    $(element).textByKey($(element).attr("b9-data-text-key"));
+                });
+            },
+            attrByKey: function(attrName, textKey) {
+                return this.attr(attrName, languageSelection.getTranslatedString(textKey));
+            },
+            replaceTitleByKey: function(attrName) {
+                this.each((index, element) => {
+                    $(element).attrByKey("title", $(element).attr("b9-data-title-key"));
+                });
+            }
+        });
         this.initUI();
         return App.findBestWeb3()
             .then(web3Instance => {
-                $("#web3_off").css({
-                    display: "none"
-                });
-                $("#web3_on").css({
-                    display: "block"
-                });
+                $(".web3-not-there").removeClass("web3-not-there").addClass("web3-there");
                 ThrottledFaucet.setProvider(web3.currentProvider);
 
                 // Get the initial account balance so it can be displayed.
@@ -105,12 +117,9 @@ window.App = {
             .then(accs => {
                 if (accs.length == 0) {
                     window.account = undefined;
-                    console.log("No account found");
                 } else {
+                    $(".has-no-account").removeClass("has-no-account").add("has-account");
                     window.account = accs[0];
-                    $("#title_your_balance").css({
-                        display: "block"
-                    });
                     $("#your_address").html(window.account);
                     if (typeof self.params.etherscanUrl !== "undefined") {
                         $("#your_address").attr("href", self.params.etherscanUrl + "address/" + window.account);
@@ -118,9 +127,6 @@ window.App = {
                         $("#your_address").attr("title", languageSelection.getTranslatedString("err-1"));
                     }
                     $("#recipient").val(window.account);
-                    $("#donate_area").css({
-                        display: "block"
-                    });
                 }
                 return self.refreshBalances();
             })
@@ -136,45 +142,20 @@ window.App = {
     initUI: function() {
         document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
         $(document).prop('title', languageSelection.getTranslatedString("page-title"));
-        $("#academy-link").text(languageSelection.getTranslatedString("academy-link"));
-        $("#web3_status").text(languageSelection.getTranslatedString("status-connecting"));
-        $("#give-away-title").text(languageSelection.getTranslatedString("withdraw-giveaway"));
-        $("#wait-title").text(languageSelection.getTranslatedString("withdraw-wait"));
-        $("#coolDown").text(languageSelection.getTranslatedString("status-loading"));
-        $("#text-you").text(languageSelection.getTranslatedString("text-amount1"));
-        $("#text-have").text(languageSelection.getTranslatedString("text-amount2"));
-        $("#title, #title_deleted").text(languageSelection.getTranslatedString("title"));
-        $("#your_address, #your_balance, #faucet_balance, #address, #owner").text(languageSelection.getTranslatedString("status-loading"));
-        $("#withdraw-title").text(languageSelection.getTranslatedString("withdraw-title"));
-        $("#btn-change").text(languageSelection.getTranslatedString("withdraw-button2"));
-        $("#btn_send").text(languageSelection.getTranslatedString("withdraw-button1"));
-        $("#btn-credit").text(languageSelection.getTranslatedString("btn-credit"));
-        $(".seconds").text(languageSelection.getTranslatedString("seconds"));
-        $(".err").text(languageSelection.getTranslatedString("err"));
-        $("#donate-title").text(languageSelection.getTranslatedString("donate-title"));
-        $("#donate-tx").text(languageSelection.getTranslatedString("tx"));
-        $("#info-header").text(languageSelection.getTranslatedString("info-header"));
-        $("#info-balance").text(languageSelection.getTranslatedString("info-balance"));
-        $("#info-address").text(languageSelection.getTranslatedString("info-address"));
-        $("#info-owner").text(languageSelection.getTranslatedString("info-owner"));
+        $("[b9-data-text-key]").replaceTextByKey();
+        $("[b9-data-title-key]").replaceTitleByKey();
 
         // fetch faucet status from (public) status api
-        fetch("https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks", {
+        return fetch("https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks", {
                 method: 'POST',
                 headers: {
                     'x-api-key': 'YNJhZDsdUX7PBylg8HwVaMSgf5jOWGP5houZipEa'
                 }
-            }).then(function(res) {
-                return res.json()
             })
+            .then(res => res.json())
             .then(function(response) {
-                if (response.allRunning) {
-                    $("#faucet-status").css("color", "#18bc9c");
-                    $("#faucet-status").text("ONLINE");
-                } else {
-                    $("#faucet-status").css("color", "red");
-                    $("#faucet-status").text("OFFLINE");
-                }
+                $(".status-loading").removeClass("status-loading").addClass(
+                    response.allRunning ? "status-online" : "status-offline");
             });
     },
 
@@ -207,7 +188,7 @@ window.App = {
             })
             .catch(error => {
                 console.error(error);
-                $("#web3_status").html(languageSelection.getTranslatedString("err-3"));
+                $("#web3_status").textByKey("err-3");
                 throw error;
             });
     },
@@ -259,15 +240,7 @@ window.App = {
         return Promise.delay(1) // This delay circumvents a Mist bug
             .then(() => ThrottledFaucet.deployed())
             .then(instance => {
-                $("#title_deleted").css({
-                    display: "none"
-                });
-                $("#title").css({
-                    display: "inline"
-                });
-                $("#faucet_area").css({
-                    display: "block"
-                });
+                $(".faucet-not-there").removeClass("faucet-not-there").addClass("faucet-there");
                 $("#address").html(instance.address);
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#address").attr("href", self.params.etherscanUrl + "address/" + instance.address);
@@ -277,7 +250,7 @@ window.App = {
                 return instance.getOwner()
                     .catch(error => {
                         console.error(error);
-                        $("#owner").html(languageSelection.getTranslatedString("err"));
+                        $("#owner").textByKey("err");
                         throw error;
                     })
                     .then(owner => {
@@ -290,15 +263,13 @@ window.App = {
                         }
                         console.log(owner, window.account, owner == window.account);
                         if (owner == window.account) {
-                            $(".owner-only").css({
-                                display: "inline-block"
-                            });
+                            $(".is-not-owner").removeClass("is-not-owner").addClass("is-owner");
                         }
                         return instance.getGiveAway();
                     })
                     .catch(error => {
                         console.error(error);
-                        $("#give_away").html(languageSelection.getTranslatedString("err"));
+                        $("#give_away").textByKey("err");
                         throw error;
                     })
                     .then(giveAway => {
@@ -322,7 +293,7 @@ window.App = {
                 })
                 .catch(error => {
                     console.error(error);
-                    $("#your_balance").html(languageSelection.getTranslatedString("err"));
+                    $("#your_balance").textByKey("err");
                     throw error;
                 });
         } else {
@@ -335,7 +306,7 @@ window.App = {
             .then(balance => $("#faucet_balance").html(self.fromWei(balance).toString(10)))
             .catch(error => {
                 console.error(error);
-                $("#faucet_balance").html(languageSelection.getTranslatedString("err"));
+                $("#faucet_balance").textByKey("err");
                 throw error;
             });
     },
@@ -376,7 +347,7 @@ window.App = {
 
         $("#btn_send").attr("disabled", true);
         $("#send_tx").html("");
-        $("#send_tx_status").html(languageSelection.getTranslatedString("tx-status-wait"));
+        $("#send_tx_status").textByKey("tx-status-wait");
         $("#send_tx_para").css("visibility", "visible");
         $("#send_tx_error_para").css("visibility", "hidden");
         $("#send_tx_error").html("N/A");
@@ -392,7 +363,7 @@ window.App = {
                         .then(success => {
                             if (!success) {
                                 $("#btn_send").attr("disabled", false);
-                                $("#send_tx_status").html(languageSelection.getTranslatedString("tx-status-err1"));
+                                $("#send_tx_status").textByKey("tx-status-err1");
                                 throw new Error("it will fail anyway");
                             }
                             return instance.giveTo.sendTransaction(recipient, {
@@ -426,7 +397,7 @@ window.App = {
             .catch(function(error) {
                 console.error(error);
                 $("#btn_send").attr("disabled", false);
-                $("#send_tx_error").html(languageSelection.getTranslatedString("tx-status-err2") + " " + error);
+                $("#send_tx_error").text(languageSelection.getTranslatedString("tx-status-err2") + " " + error);
                 $("#send_tx_error_para").css("visibility", "visible");
             });
     },
@@ -462,7 +433,7 @@ window.App = {
             })
             .catch(error => {
                 console.error(error);
-                $("#coolDown").html(languageSelection.getTranslatedString("err"));
+                $("#coolDown").textByKey("err");
                 throw error;
             });
     },
@@ -504,7 +475,7 @@ window.App = {
         const amount = $("#donation").val();
 
         $("#donate_tx").html("");
-        $("#donate_tx_status").html(languageSelection.getTranslatedString("tx-status-wait"));
+        $("#donate_tx_status").textByKey("tx-status-wait");
         $("#donate_tx_para").css("visibility", "visible");
         $("#donate_tx_error_para").css("visibility", "hidden");
         $("#donate_tx_error").html("N/A");
@@ -532,7 +503,7 @@ window.App = {
                 if (receipt.gasUsed == 100000) {
                     throw new Error("donation was not sent for internal reasons");
                 }
-                $("#donate_tx_status").html(languageSelection.getTranslatedString("status-done"));
+                $("#donate_tx_status").textByKey("status-done");
                 return Promise.delay(5000); // To circumvent a bug where balance is not updated yet
             })
             .then(() => self.refreshBalances())

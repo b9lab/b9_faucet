@@ -27,5 +27,4 @@ LanguageSelection.prototype.isLanguageAvailable = function(lang) {
     return typeof(this.languageData["languages"][lang]) != "undefined";
 }
 
-
 var languageSelection = new LanguageSelection();
