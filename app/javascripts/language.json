@@ -73,7 +73,7 @@
         "de": {
             "academy-link": "Besuche unsere Kurse!",
             "title": "Durchflussreduzierter Testnetz-Spender",
-            "title-no-faucet": "There is no faucet on this network",
+            "title-no-faucet": "Kein Spender in diesem Netzwerk gefunden",
             "withdraw-title": "Abheben",
             "withdraw-wait": "Bitte warten",
             "withdraw-giveaway": "Ausgabe:",
@@ -143,7 +143,7 @@
         "tr": {
             "academy-link": "Kurslarımıza bakın!",
             "title": "Düşük akışlı test dağıtıcısı",
-            "title-no-faucet": "There is no faucet on this network",
+            "title-no-faucet": "Bu networkde dağıtıcı yok",
             "withdraw-title": "Doldur",
             "withdraw-wait": "Lütfen bekleyin",
             "withdraw-giveaway": "Verim:",
