@@ -27837,11 +27837,9 @@ const etherscanUrls = {
 // For application bootstrapping, check out window.addEventListener below.
 let account;
 
-window.addEventListener('load', function() {
-    languageSelection.init().then(function() {
-        window.App.start();
-    })
-
+window.addEventListener('load', async function() {
+    await languageSelection.init();
+    await window.App.start();
 });
 
 window.App = {
@@ -27882,15 +27880,29 @@ window.App = {
      */
     start: function() {
         const self = this;
+        // Extend jQuery with our language translator.
+        __WEBPACK_IMPORTED_MODULE_4_jquery___default.a.fn.extend({
+            textByKey: function(textKey) {
+                return this.text(languageSelection.getTranslatedString(textKey));
+            },
+            replaceTextByKey: function() {
+                this.each((index, element) => {
+                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()(element).textByKey(__WEBPACK_IMPORTED_MODULE_4_jquery___default()(element).attr("b9-data-text-key"));
+                });
+            },
+            attrByKey: function(attrName, textKey) {
+                return this.attr(attrName, languageSelection.getTranslatedString(textKey));
+            },
+            replaceTitleByKey: function(attrName) {
+                this.each((index, element) => {
+                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()(element).attrByKey("title", __WEBPACK_IMPORTED_MODULE_4_jquery___default()(element).attr("b9-data-title-key"));
+                });
+            }
+        });
         this.initUI();
         return App.findBestWeb3()
             .then(web3Instance => {
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#web3_off").css({
-                    display: "none"
-                });
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#web3_on").css({
-                    display: "block"
-                });
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".web3-not-there").removeClass("web3-not-there").addClass("web3-there");
                 ThrottledFaucet.setProvider(web3.currentProvider);
 
                 // Get the initial account balance so it can be displayed.
@@ -27899,12 +27911,9 @@ window.App = {
             .then(accs => {
                 if (accs.length == 0) {
                     window.account = undefined;
-                    console.log("No account found");
                 } else {
+                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".has-no-account").removeClass("has-no-account").add("has-account");
                     window.account = accs[0];
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#title_your_balance").css({
-                        display: "block"
-                    });
                     __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#your_address").html(window.account);
                     if (typeof self.params.etherscanUrl !== "undefined") {
                         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#your_address").attr("href", self.params.etherscanUrl + "address/" + window.account);
@@ -27912,9 +27921,6 @@ window.App = {
                         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#your_address").attr("title", languageSelection.getTranslatedString("err-1"));
                     }
                     __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#recipient").val(window.account);
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_area").css({
-                        display: "block"
-                    });
                 }
                 return self.refreshBalances();
             })
@@ -27930,45 +27936,20 @@ window.App = {
     initUI: function() {
         document.querySelector('#languageSelection [value="' + languageSelection.selectedLanguage + '"]').selected = true;
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()(document).prop('title', languageSelection.getTranslatedString("page-title"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#academy-link").text(languageSelection.getTranslatedString("academy-link"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#web3_status").text(languageSelection.getTranslatedString("status-connecting"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#give-away-title").text(languageSelection.getTranslatedString("withdraw-giveaway"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#wait-title").text(languageSelection.getTranslatedString("withdraw-wait"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#coolDown").text(languageSelection.getTranslatedString("status-loading"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#text-you").text(languageSelection.getTranslatedString("text-amount1"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#text-have").text(languageSelection.getTranslatedString("text-amount2"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#title, #title_deleted").text(languageSelection.getTranslatedString("title"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#your_address, #your_balance, #faucet_balance, #address, #owner").text(languageSelection.getTranslatedString("status-loading"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#withdraw-title").text(languageSelection.getTranslatedString("withdraw-title"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#btn-change").text(languageSelection.getTranslatedString("withdraw-button2"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#btn_send").text(languageSelection.getTranslatedString("withdraw-button1"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#btn-credit").text(languageSelection.getTranslatedString("btn-credit"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".seconds").text(languageSelection.getTranslatedString("seconds"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".err").text(languageSelection.getTranslatedString("err"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate-title").text(languageSelection.getTranslatedString("donate-title"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate-tx").text(languageSelection.getTranslatedString("tx"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#info-header").text(languageSelection.getTranslatedString("info-header"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#info-balance").text(languageSelection.getTranslatedString("info-balance"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#info-address").text(languageSelection.getTranslatedString("info-address"));
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#info-owner").text(languageSelection.getTranslatedString("info-owner"));
+        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("[b9-data-text-key]").replaceTextByKey();
+        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("[b9-data-title-key]").replaceTitleByKey();
 
         // fetch faucet status from (public) status api
-        fetch("https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks", {
+        return fetch("https://jd4vq2xzq1.execute-api.eu-west-1.amazonaws.com/default/faucetHealthChecks", {
                 method: 'POST',
                 headers: {
                     'x-api-key': 'YNJhZDsdUX7PBylg8HwVaMSgf5jOWGP5houZipEa'
                 }
-            }).then(function(res) {
-                return res.json()
             })
+            .then(res => res.json())
             .then(function(response) {
-                if (response.allRunning) {
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet-status").css("color", "#18bc9c");
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet-status").text("ONLINE");
-                } else {
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet-status").css("color", "red");
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet-status").text("OFFLINE");
-                }
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".status-loading").removeClass("status-loading").addClass(
+                    response.allRunning ? "status-online" : "status-offline");
             });
     },
 
@@ -28001,7 +27982,7 @@ window.App = {
             })
             .catch(error => {
                 console.error(error);
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#web3_status").html(languageSelection.getTranslatedString("err-3"));
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#web3_status").textByKey("err-3");
                 throw error;
             });
     },
@@ -28053,15 +28034,7 @@ window.App = {
         return __WEBPACK_IMPORTED_MODULE_3_bluebird___default.a.delay(1) // This delay circumvents a Mist bug
             .then(() => ThrottledFaucet.deployed())
             .then(instance => {
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#title_deleted").css({
-                    display: "none"
-                });
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#title").css({
-                    display: "inline"
-                });
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet_area").css({
-                    display: "block"
-                });
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".faucet-not-there").removeClass("faucet-not-there").addClass("faucet-there");
                 __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#address").html(instance.address);
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#address").attr("href", self.params.etherscanUrl + "address/" + instance.address);
@@ -28071,7 +28044,7 @@ window.App = {
                 return instance.getOwner()
                     .catch(error => {
                         console.error(error);
-                        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#owner").html(languageSelection.getTranslatedString("err"));
+                        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#owner").textByKey("err");
                         throw error;
                     })
                     .then(owner => {
@@ -28084,15 +28057,13 @@ window.App = {
                         }
                         console.log(owner, window.account, owner == window.account);
                         if (owner == window.account) {
-                            __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".owner-only").css({
-                                display: "inline-block"
-                            });
+                            __WEBPACK_IMPORTED_MODULE_4_jquery___default()(".is-not-owner").removeClass("is-not-owner").addClass("is-owner");
                         }
                         return instance.getGiveAway();
                     })
                     .catch(error => {
                         console.error(error);
-                        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#give_away").html(languageSelection.getTranslatedString("err"));
+                        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#give_away").textByKey("err");
                         throw error;
                     })
                     .then(giveAway => {
@@ -28116,7 +28087,7 @@ window.App = {
                 })
                 .catch(error => {
                     console.error(error);
-                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#your_balance").html(languageSelection.getTranslatedString("err"));
+                    __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#your_balance").textByKey("err");
                     throw error;
                 });
         } else {
@@ -28129,7 +28100,7 @@ window.App = {
             .then(balance => __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet_balance").html(self.fromWei(balance).toString(10)))
             .catch(error => {
                 console.error(error);
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet_balance").html(languageSelection.getTranslatedString("err"));
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#faucet_balance").textByKey("err");
                 throw error;
             });
     },
@@ -28170,7 +28141,7 @@ window.App = {
 
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#btn_send").attr("disabled", true);
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx").html("");
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_status").html(languageSelection.getTranslatedString("tx-status-wait"));
+        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_status").textByKey("tx-status-wait");
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_para").css("visibility", "visible");
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_error_para").css("visibility", "hidden");
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_error").html("N/A");
@@ -28186,7 +28157,7 @@ window.App = {
                         .then(success => {
                             if (!success) {
                                 __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#btn_send").attr("disabled", false);
-                                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_status").html(languageSelection.getTranslatedString("tx-status-err1"));
+                                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_status").textByKey("tx-status-err1");
                                 throw new Error("it will fail anyway");
                             }
                             return instance.giveTo.sendTransaction(recipient, {
@@ -28220,7 +28191,7 @@ window.App = {
             .catch(function(error) {
                 console.error(error);
                 __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#btn_send").attr("disabled", false);
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_error").html(languageSelection.getTranslatedString("tx-status-err2") + " " + error);
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_error").text(languageSelection.getTranslatedString("tx-status-err2") + " " + error);
                 __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#send_tx_error_para").css("visibility", "visible");
             });
     },
@@ -28256,7 +28227,7 @@ window.App = {
             })
             .catch(error => {
                 console.error(error);
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#coolDown").html(languageSelection.getTranslatedString("err"));
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#coolDown").textByKey("err");
                 throw error;
             });
     },
@@ -28298,7 +28269,7 @@ window.App = {
         const amount = __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donation").val();
 
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx").html("");
-        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_status").html(languageSelection.getTranslatedString("tx-status-wait"));
+        __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_status").textByKey("tx-status-wait");
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_para").css("visibility", "visible");
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_error_para").css("visibility", "hidden");
         __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_error").html("N/A");
@@ -28326,7 +28297,7 @@ window.App = {
                 if (receipt.gasUsed == 100000) {
                     throw new Error("donation was not sent for internal reasons");
                 }
-                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_status").html(languageSelection.getTranslatedString("status-done"));
+                __WEBPACK_IMPORTED_MODULE_4_jquery___default()("#donate_tx_status").textByKey("status-done");
                 return __WEBPACK_IMPORTED_MODULE_3_bluebird___default.a.delay(5000); // To circumvent a bug where balance is not updated yet
             })
             .then(() => self.refreshBalances())
@@ -28647,7 +28618,7 @@ module.exports = {
 			"type": "event"
 		}
 	],
-	"unlinked_binary": "0x60606040526040516060806107228339810160409081528151602083015191909201515b5b805b825b845b5b60008054600160a060020a03191633600160a060020a03161790555b6000805460a060020a60ff02191674010000000000000000000000000000000000000000831515021790555b5060018190555b5060028190555b50426003555b5b5050505b6106878061009b6000396000f300606060405236156100935763ffffffff60e060020a60003504166311ee8382811461009c57806313af4035146100be5780631f5e8f4c146100ee57806324daddc5146101125780634921a91a1461013b57806363e4bff414610157578063764978f91461017f578063893d20e8146101a1578063ba40aaa1146101cd578063cebc9a82146101f4578063e177246e14610216575b61009a5b5b565b005b34156100a457fe5b6100ac61023d565b60408051918252519081900360200190f35b34156100c657fe5b6100da600160a060020a0360043516610244565b604080519115158252519081900360200190f35b34156100f657fe5b6100da610307565b604080519115158252519081900360200190f35b341561011a57fe5b6100da6004351515610318565b604080519115158252519081900360200190f35b6100da6103d6565b604080519115158252519081900360200190f35b6100da600160a060020a0360043516610420565b604080519115158252519081900360200190f35b341561018757fe5b6100ac61046c565b60408051918252519081900360200190f35b34156101a957fe5b6101b1610473565b60408051600160a060020a039092168252519081900360200190f35b34156101d557fe5b6100da600435610483565b604080519115158252519081900360200190f35b34156101fc57fe5b6100ac61050d565b60408051918252519081900360200190f35b341561021e57fe5b6100da600435610514565b604080519115158252519081900360200190f35b6003545b90565b60006000610250610473565b600160a060020a031633600160a060020a03161415156102705760006000fd5b600160a060020a03831615156102865760006000fd5b50600054600160a060020a0390811690831681146102fb57604051600160a060020a0380851691908316907ffcf23a92150d56e85e3a3d33b357493246e55783095eb6a733eb8439ffc752c890600090a360008054600160a060020a031916600160a060020a03851617905560019150610300565b600091505b5b50919050565b60005460a060020a900460ff165b90565b60006000610324610473565b600160a060020a031633600160a060020a03161415156103445760006000fd5b5060005460a060020a900460ff16801515831515146102fb576000546040805160a060020a90920460ff1615158252841515602083015280517fe6cd46a119083b86efc6884b970bfa30c1708f53ba57b86716f15b2f4551a9539281900390910190a16000805460a060020a60ff02191660a060020a8515150217905560019150610300565b600091505b5b50919050565b60006103e0610307565b801561040557506103ef610473565b600160a060020a031633600160a060020a031614155b156104105760006000fd5b610419336105a0565b90505b5b90565b600061042a610307565b801561044f5750610439610473565b600160a060020a031633600160a060020a031614155b1561045a5760006000fd5b610463826105a0565b90505b5b919050565b6001545b90565b600054600160a060020a03165b90565b6000600061048f610473565b600160a060020a031633600160a060020a03161415156104af5760006000fd5b506001548281146102fb57604080518281526020810185905281517f79a3746dde45672c9e8ab3644b8bb9c399a103da2dc94b56ba09777330a83509929181900390910190a160018381559150610300565b600091505b5b50919050565b6002545b90565b60006000610520610473565b600160a060020a031633600160a060020a03161415156105405760006000fd5b506002548281146102fb57604080518281526020810185905281517ff6991a728965fedd6e927fdf16bdad42d8995970b4b31b8a2bf88767516e2494929181900390910190a1600283905560019150610300565b600091505b5b50919050565b60006000426105ad61023d565b116102fb576105c46105bd61050d565b4201610652565b6105cc61046c565b604051909150600160a060020a038416908290600081818185876187965a03f1925050501561063d57604080518281529051600160a060020a038516917f9bca65ce52fdef8a470977b51f247a2295123a4807dfa9e502edf0d30722da3b919081900360200190a260019150610300565b6102fb42610652565b5b600091505b50919050565b60038190555b505600a165627a7a72305820b7280835cfeb04b542d767f9d0d1d100191abd94c9aded7a59c5dbe676087bfc0029",
+	"unlinked_binary": "0x606060405260405160608061073c8339810160405280805191906020018051919060200180519150505b5b805b825b845b5b60008054600160a060020a03191633600160a060020a03161790555b6000805460a060020a60ff02191674010000000000000000000000000000000000000000831515021790555b5060018190555b5060028190555b50426003555b5b5050505b61069b806100a16000396000f300606060405236156100935763ffffffff60e060020a60003504166311ee8382811461009c57806313af4035146100c15780631f5e8f4c146100f457806324daddc51461011b5780634921a91a1461014757806363e4bff414610163578063764978f91461018b578063893d20e8146101b0578063ba40aaa1146101df578063cebc9a8214610209578063e177246e1461022e575b61009a5b5b565b005b34156100a757600080fd5b6100af610258565b60405190815260200160405180910390f35b34156100cc57600080fd5b6100e0600160a060020a036004351661025f565b604051901515815260200160405180910390f35b34156100ff57600080fd5b6100e0610326565b604051901515815260200160405180910390f35b341561012657600080fd5b6100e06004351515610337565b604051901515815260200160405180910390f35b6100e06103f4565b604051901515815260200160405180910390f35b6100e0600160a060020a036004351661043d565b604051901515815260200160405180910390f35b341561019657600080fd5b6100af610488565b60405190815260200160405180910390f35b34156101bb57600080fd5b6101c361048f565b604051600160a060020a03909116815260200160405180910390f35b34156101ea57600080fd5b6100e060043561049f565b604051901515815260200160405180910390f35b341561021457600080fd5b6100af610526565b60405190815260200160405180910390f35b341561023957600080fd5b6100e060043561052d565b604051901515815260200160405180910390f35b6003545b90565b60008061026a61048f565b600160a060020a031633600160a060020a031614151561028957600080fd5b600160a060020a038316151561029e57600080fd5b50600054600160a060020a03908116908316811461031a5782600160a060020a031681600160a060020a03167ffcf23a92150d56e85e3a3d33b357493246e55783095eb6a733eb8439ffc752c860405160405180910390a360008054600160a060020a031916600160a060020a0385161790556001915061031f565b600091505b5b50919050565b60005460a060020a900460ff165b90565b60008061034261048f565b600160a060020a031633600160a060020a031614151561036157600080fd5b5060005460a060020a900460ff168015158315151461031a576000547fe6cd46a119083b86efc6884b970bfa30c1708f53ba57b86716f15b2f4551a9539060a060020a900460ff16846040519115158252151560208201526040908101905180910390a16000805460a060020a60ff02191660a060020a851515021790556001915061031f565b600091505b5b50919050565b60006103fe610326565b1580610422575061040d61048f565b600160a060020a031633600160a060020a0316145b151561042d57600080fd5b610436336105b6565b90505b5b90565b6000610447610326565b158061046b575061045661048f565b600160a060020a031633600160a060020a0316145b151561047657600080fd5b61047f826105b6565b90505b5b919050565b6001545b90565b600054600160a060020a03165b90565b6000806104aa61048f565b600160a060020a031633600160a060020a03161415156104c957600080fd5b5060015482811461031a577f79a3746dde45672c9e8ab3644b8bb9c399a103da2dc94b56ba09777330a83509818460405191825260208201526040908101905180910390a16001838155915061031f565b600091505b5b50919050565b6002545b90565b60008061053861048f565b600160a060020a031633600160a060020a031614151561055757600080fd5b5060025482811461031a577ff6991a728965fedd6e927fdf16bdad42d8995970b4b31b8a2bf88767516e2494818460405191825260208201526040908101905180910390a160028390556001915061031f565b600091505b5b50919050565b600080426105c2610258565b1161031a576105d96105d2610526565b4201610666565b6105e1610488565b905082600160a060020a03168160405160006040518083038185876187965a03f192505050156106515782600160a060020a03167f9bca65ce52fdef8a470977b51f247a2295123a4807dfa9e502edf0d30722da3b8260405190815260200160405180910390a26001915061031f565b61031a42610666565b5b600091505b50919050565b60038190555b505600a165627a7a723058207f2f4e2635b6b7830b5fab4e24f5835c148a729092935099641cd13b2b6c653d0029",
 	"networks": {
 		"3": {
 			"events": {
@@ -28740,10 +28711,102 @@ module.exports = {
 			"links": {},
 			"address": "0x3b873a919aa0512d5a0f09e6dcceaa4a6727fafe",
 			"updated_at": 1497520405569
+		},
+		"1505518974835": {
+			"events": {
+				"0x9bca65ce52fdef8a470977b51f247a2295123a4807dfa9e502edf0d30722da3b": {
+					"anonymous": false,
+					"inputs": [
+						{
+							"indexed": true,
+							"name": "who",
+							"type": "address"
+						},
+						{
+							"indexed": false,
+							"name": "amount",
+							"type": "uint256"
+						}
+					],
+					"name": "LogPaid",
+					"type": "event"
+				},
+				"0xf6991a728965fedd6e927fdf16bdad42d8995970b4b31b8a2bf88767516e2494": {
+					"anonymous": false,
+					"inputs": [
+						{
+							"indexed": false,
+							"name": "oldDelay",
+							"type": "uint256"
+						},
+						{
+							"indexed": false,
+							"name": "newDelay",
+							"type": "uint256"
+						}
+					],
+					"name": "LogDelayChanged",
+					"type": "event"
+				},
+				"0x79a3746dde45672c9e8ab3644b8bb9c399a103da2dc94b56ba09777330a83509": {
+					"anonymous": false,
+					"inputs": [
+						{
+							"indexed": false,
+							"name": "oldGiveAway",
+							"type": "uint256"
+						},
+						{
+							"indexed": false,
+							"name": "newGiveAway",
+							"type": "uint256"
+						}
+					],
+					"name": "LogGiveAwayChanged",
+					"type": "event"
+				},
+				"0xe6cd46a119083b86efc6884b970bfa30c1708f53ba57b86716f15b2f4551a953": {
+					"anonymous": false,
+					"inputs": [
+						{
+							"indexed": false,
+							"name": "oldRestricted",
+							"type": "bool"
+						},
+						{
+							"indexed": false,
+							"name": "newRestricted",
+							"type": "bool"
+						}
+					],
+					"name": "LogRestrictedChanged",
+					"type": "event"
+				},
+				"0xfcf23a92150d56e85e3a3d33b357493246e55783095eb6a733eb8439ffc752c8": {
+					"anonymous": false,
+					"inputs": [
+						{
+							"indexed": true,
+							"name": "oldOwner",
+							"type": "address"
+						},
+						{
+							"indexed": true,
+							"name": "newOwner",
+							"type": "address"
+						}
+					],
+					"name": "LogOwnerChanged",
+					"type": "event"
+				}
+			},
+			"links": {},
+			"address": "0xa031a9ed983700321980301000996abd9f2c83da",
+			"updated_at": 1505519005207
 		}
 	},
 	"schema_version": "0.0.5",
-	"updated_at": 1501881184584
+	"updated_at": 1505519005207
 };
 
 /***/ }),
@@ -47298,7 +47361,7 @@ module.exports = {
 	"_args": [
 		[
 			"truffle-contract-schema@0.0.5",
-			"/Users/sam/Desktop/b9_faucet"
+			"/Users/xavier/DAPPS/b9internal/b9_faucet_2"
 		]
 	],
 	"_development": true,
@@ -47323,7 +47386,7 @@ module.exports = {
 	],
 	"_resolved": "https://registry.npmjs.org/truffle-contract-schema/-/truffle-contract-schema-0.0.5.tgz",
 	"_spec": "0.0.5",
-	"_where": "/Users/sam/Desktop/b9_faucet",
+	"_where": "/Users/xavier/DAPPS/b9internal/b9_faucet_2",
 	"author": {
 		"name": "Tim Coulter",
 		"email": "tim.coulter@consensys.net"

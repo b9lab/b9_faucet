@@ -31,6 +31,7 @@
     "eth-gas-reporter": "0.0.12",
     "ethereumjs-testrpc": "^3.9.2",
     "html-webpack-plugin": "^2.29.0",
+    "http-server": "^0.11.1",
     "json-loader": "^0.5.4",
     "mocha": "^3.4.2",
     "solium": "^0.5.4",
