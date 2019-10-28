@@ -25,7 +25,6 @@ window.ThrottledFaucet = ThrottledFaucet;
 // Declare the possible web3 providers
 const rpcEndPoints = [
     "http://localhost:8545",
-    "http://geth.b9lab.com:8549",
     "https://ropsten.infura.io/"
 ];
 
