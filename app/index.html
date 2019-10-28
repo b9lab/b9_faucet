@@ -28,11 +28,11 @@
         </a>
 
         <select class="form-control" id="languageSelection" onchange="changeLanguage(this.value)">
-            <option value="de">Deutsch</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="tr">Türkçe</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="tr">🇹🇷 Türkçe</option>
         </select>
     </div><!--/.nav-collapse -->
 
@@ -71,7 +71,7 @@
                 <span b9-data-text-key="withdraw-giveaway">GiveAway</span>:
                 <span class="black"><span id="give_away">Loading...</span> Ξ</span>
                 <span class="when-is-owner">
-                    <input id="give_away_input" type="number" class="small"/>
+                    <input id="give_away_input" type="number" class="small" placeholder="0.5"/>
                     <button b9-data-text-key="withdraw-button2" class="btn btn-success" onclick="App.changeGiveAway()">Change</button>
                 </span>
             </p>
@@ -88,10 +88,10 @@
 
             <div class="when-has-account">
 
-                <h3 b9-data-text-key="donate-title">Donate</h3>
+                <h3 b9-data-text-key="donate-title">Donate 👏</h3>
                 <p>
                     <button b9-data-text-key="btn-credit" class="btn btn-success" onclick="App.donate()">Credit</button>
-                    <input id="donation" type="number" placeholder="a number"/> Ξ 
+                    <input id="donation" type="number" placeholder="an amount of Ethers"/> Ξ 
                 </p>
                 <p id="donate_tx_para" style="visibility:hidden;">
                     <span b9-data-text-key="tx">Transaction</span>: <a id="donate_tx"></a> <span id="donate_tx_status">N/A</span>

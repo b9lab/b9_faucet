@@ -47,10 +47,6 @@
                 <p id="status-web"></p>
             </div>
             <div class="col-sm-4">
-                <h3>Geth</h3>
-                <p id="status-geth"></p>
-            </div>
-            <div class="col-sm-4">
                 <h3>Cert</h3>
                 <p id="status-cert"></p>
             </div>
@@ -86,7 +82,6 @@
         }).done(function(data) {
             setStatus("#status-all", data.allRunning, data.allRunning ? "Online" : "Impaired");
             setStatus("#status-web", data.web.running, "Status: " + data.web.result.toString());
-            setStatus("#status-geth", data.geth.running, data.geth.result);
             setStatus("#status-cert", data.cert.valid, data.cert.result);
         });
     </script>
