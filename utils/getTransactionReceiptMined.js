@@ -2,7 +2,7 @@ const sequentialPromise = require("./sequentialPromise.js");
 
 /**
  * @param {!string | !Array.<!string>} txHash, a transaction hash or an array of transaction hashes.
- * @param {Number} interval, in seconds.
+ * @param {Number} interval, in milliseconds.
  * @returns {!Promise.<!object> | !Promise.<!Array.<!object>>} the receipt or an array of receipts.
  */
 module.exports = function getTransactionReceiptMined(txHash, interval) {

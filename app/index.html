@@ -43,7 +43,7 @@
         <h1 id="web3_status" b9-data-text-key="status-connecting">Connecting to Ethereum...</h1>
     </div>
 
-    <div class="when-web3-there faucet-not-there has-no-account is-not-owner container">
+    <div class="when-web3-there faucet-not-there has-no-account is-not-owner is-not-eip-1102 container">
         <h1>
             <span class="when-faucet-there" b9-data-text-key="title">Throttled Testnet Faucet</span>
             <del class="when-faucet-not-there" b9-data-text-key="title" b9-data-title-key="title-no-faucet">
@@ -78,6 +78,9 @@
             <p>
                 <button id="btn_send" b9-data-text-key="withdraw-button1" class="btn btn-success" onclick="App.sendCoin()" disabled="true">Send To</button>
                 <input id="recipient" type="text" placeholder="0x0123456789012345678901234567890123456789"/>
+                <button id="btn_unlock" b9-data-text-key="withdraw-button3" class="when-is-eip-1102 btn btn-success" onclick="App.unlockAccounts()">
+                    Access my account
+                </button>
             </p>
             <p id="send_tx_para" style="visibility:hidden;">
                 Transaction: <a id="send_tx"></a> <span id="send_tx_status">N/A</span>
