@@ -1,0 +1,40 @@
+body {
+    text-align: center;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#logo {
+    height: 36px;
+    width: auto;
+    margin-left: 86px;
+}
+
+.navbar {
+    background: rgba(222, 113, 80, 1);
+    height: 60px;
+}
+
+.navbar-nav {
+    flex-direction: row;
+}
+
+.nav-link {
+    color: white !important;
+    font-size: 15px;
+    margin-right: 25px;
+}
+
+nav>ul {
+    margin-left: 11px;
+    margin-top: 2px;
+}
+
+.success {
+    background: green;
+    color: white;
+}
+
+.failure {
+    background: red;
+    color: white;
+}

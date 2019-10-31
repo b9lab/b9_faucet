@@ -29,6 +29,16 @@ module.exports = {
             {
                 from: './app/javascripts/language.json',
                 to: "js/language.json"
+            },
+            {
+                from: './app/statuspage',
+                to: "statuspage"
+            }
+        ]),
+        new CopyWebpackPlugin([
+            { // Doing another instance, because ./app/images/ is dirty in the other instance.
+                from: './app/images/logo-open-edx.png',
+                to: "statuspage/logo-open-edx.png"
             }
         ]),
     ],
