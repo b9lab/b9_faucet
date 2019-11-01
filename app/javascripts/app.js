@@ -1,19 +1,9 @@
 // Import libraries we need.
-import {
-    default as BigNumber
-} from 'bignumber.js';
-import {
-    default as Web3
-} from 'web3';
-import {
-    default as contract
-} from 'truffle-contract'
-import {
-    default as Promise
-} from 'bluebird';
-import {
-    default as $
-} from 'jquery';
+import { default as BigNumber } from 'bignumber.js';
+import { default as Web3 } from 'web3';
+import { default as contract } from 'truffle-contract'
+import { default as Promise } from 'bluebird';
+import { default as $ } from 'jquery';
 
 // Import our contract artifacts and turn them into usable abstractions.
 import throttledFaucetArtifacts from '../../build/contracts/ThrottledFaucet.json'
@@ -21,6 +11,8 @@ import throttledFaucetArtifacts from '../../build/contracts/ThrottledFaucet.json
 // ThrottledFaucet is our usable abstraction, which we'll use through the code below.
 const ThrottledFaucet = contract(throttledFaucetArtifacts);
 window.ThrottledFaucet = ThrottledFaucet;
+
+import { languageSelection } from "./language.js";
 
 // Declare the possible web3 providers
 const rpcEndPoints = [
@@ -43,7 +35,6 @@ const etherscanUrls = {
 let account;
 
 window.addEventListener('load', async function() {
-    await languageSelection.init();
     await window.App.start();
 });
 
@@ -289,7 +280,7 @@ window.App = {
                         } else {
                             $("#owner").attr("title", languageSelection.getTranslatedString("err-1"));
                         }
-                        console.log(owner, window.account, owner == window.account);
+                        console.log(owner, "is owner:", window.account, owner == window.account);
                         if (owner == window.account) {
                             $(".is-not-owner").removeClass("is-not-owner").addClass("is-owner");
                         }
@@ -365,7 +356,7 @@ window.App = {
     sendCoin: function() {
         const self = this;
         const recipient = $("#recipient").val();
-        console.log("recipient", recipient);
+        console.log("recipient:", recipient);
 
         $("#btn_send").attr("disabled", true);
         $("#send_tx").html("");
@@ -377,7 +368,7 @@ window.App = {
         return ThrottledFaucet.deployed()
             .then(_instance => {
                 instance = _instance;
-                console.log(self.params.owner === window.account);
+                console.log("is owner:", self.params.owner === window.account);
                 if (self.params.owner === window.account && typeof window.account !== "undefined") {
                     return instance.giveTo.call(recipient, {
                             from: window.account

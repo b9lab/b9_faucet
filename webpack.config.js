@@ -23,14 +23,6 @@ module.exports = {
                 to: "css"
             },
             {
-                from: './app/javascripts/language.js',
-                to: "js/language.js"
-            },
-            {
-                from: './app/javascripts/language.json',
-                to: "js/language.json"
-            },
-            {
                 from: './app/statuspage',
                 to: "statuspage"
             }
