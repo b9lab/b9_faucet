@@ -93,7 +93,14 @@ window.App = {
                 this.each((index, element) => {
                     $(element).attrByKey("title", $(element).attr("b9-data-title-key"));
                 });
-            }
+            },
+            shrinkHexText: (function () {
+                const shrinkerPattern = new RegExp(/(0x[0-9a-fA-F]{6})[0-9a-fA-F]+([0-9a-fA-F]{6})/);
+                return function(hexVal) {
+                    const shrunk = shrinkerPattern.exec(hexVal).slice(1, 3).join("...");
+                    this.text(shrunk);
+                };
+            })()
         });
         return Promise.all([
                 this.initUI(),    
@@ -232,7 +239,7 @@ window.App = {
         } else {
             $(".has-no-account").removeClass("has-no-account").addClass("has-account");
             window.account = accounts[0];
-            $("#your_address").html(window.account);
+            $("#your_address").shrinkHexText(window.account);
             if (typeof self.params.etherscanUrl !== "undefined") {
                 $("#your_address").attr("href", self.params.etherscanUrl + "address/" + window.account);
             } else {
@@ -260,7 +267,7 @@ window.App = {
             .then(ThrottledFaucet.deployed)
             .then(instance => {
                 $(".faucet-not-there").removeClass("faucet-not-there").addClass("faucet-there");
-                $("#address").html(instance.address);
+                $("#address").shrinkHexText(instance.address);
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#address").attr("href", self.params.etherscanUrl + "address/" + instance.address);
                 } else {
@@ -274,7 +281,7 @@ window.App = {
                     })
                     .then(owner => {
                         self.params.owner = owner;
-                        $("#owner").html(owner);
+                        $("#owner").shrinkHexText(owner);
                         if (typeof self.params.etherscanUrl !== "undefined") {
                             $("#owner").attr("href", self.params.etherscanUrl + "address/" + owner);
                         } else {
@@ -316,7 +323,7 @@ window.App = {
         return promise
             .then(ThrottledFaucet.deployed)
             .then(instance => web3.eth.getBalancePromise(instance.address))
-            .then(balance => $("#faucet_balance").html(self.fromWei(balance).toString(10)))
+            .then(balance => $("#faucet_balance").text(self.fromWei(balance).toString(10)))
             .catch(error => {
                 console.error(error);
                 $("#faucet_balance").textByKey("err");
@@ -389,7 +396,7 @@ window.App = {
             })
             .then(txHash => {
                 $("#send_tx_status").html("on the way");
-                $("#send_tx").html(txHash);
+                $("#send_tx").shrinkHexText(txHash);
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#send_tx").attr("href", self.params.etherscanUrl + "tx/" + txHash);
                 } else {
@@ -504,7 +511,7 @@ window.App = {
             .then(txHash => {
                 $("#donation").val("");
                 $("#donate_tx_status").html("on the way");
-                $("#donate_tx").html(txHash);
+                $("#donate_tx").shrinkHexText(txHash);
                 if (typeof self.params.etherscanUrl !== "undefined") {
                     $("#donate_tx").attr("href", self.params.etherscanUrl + "tx/" + txHash);
                 } else {
