@@ -1,19 +1,9 @@
 // Import libraries we need.
-import {
-    default as BigNumber
-} from 'bignumber.js';
-import {
-    default as Web3
-} from 'web3';
-import {
-    default as contract
-} from 'truffle-contract'
-import {
-    default as Promise
-} from 'bluebird';
-import {
-    default as $
-} from 'jquery';
+import { default as BigNumber } from 'bignumber.js';
+import { default as Web3 } from 'web3';
+import { default as contract } from 'truffle-contract'
+import { default as Promise } from 'bluebird';
+import { default as $ } from 'jquery';
 
 // Import our contract artifacts and turn them into usable abstractions.
 import throttledFaucetArtifacts from '../../build/contracts/ThrottledFaucet.json'
@@ -22,10 +12,11 @@ import throttledFaucetArtifacts from '../../build/contracts/ThrottledFaucet.json
 const ThrottledFaucet = contract(throttledFaucetArtifacts);
 window.ThrottledFaucet = ThrottledFaucet;
 
+import { languageSelection } from "./language.js";
+
 // Declare the possible web3 providers
 const rpcEndPoints = [
     "http://localhost:8545",
-    "http://geth.b9lab.com:8549",
     "https://ropsten.infura.io/"
 ];
 
@@ -44,7 +35,6 @@ const etherscanUrls = {
 let account;
 
 window.addEventListener('load', async function() {
-    await languageSelection.init();
     await window.App.start();
 });
 
@@ -105,34 +95,25 @@ window.App = {
                 });
             }
         });
-        this.initUI();
-        return App.findBestWeb3()
-            .then(web3Instance => {
-                $(".web3-not-there").removeClass("web3-not-there").addClass("web3-there");
-                ThrottledFaucet.setProvider(web3.currentProvider);
+        return Promise.all([
+                this.initUI(),    
+                App.findBestWeb3()
+                    .then(web3Instance => {
+                        $(".web3-not-there").removeClass("web3-not-there").addClass("web3-there");
+                        ThrottledFaucet.setProvider(web3.currentProvider);
 
-                // Get the initial account balance so it can be displayed.
-                return window.web3.eth.getAccountsPromise();
-            })
-            .then(accs => {
-                if (accs.length == 0) {
-                    window.account = undefined;
-                } else {
-                    $(".has-no-account").removeClass("has-no-account").add("has-account");
-                    window.account = accs[0];
-                    $("#your_address").html(window.account);
-                    if (typeof self.params.etherscanUrl !== "undefined") {
-                        $("#your_address").attr("href", self.params.etherscanUrl + "address/" + window.account);
-                    } else {
-                        $("#your_address").attr("title", languageSelection.getTranslatedString("err-1"));
-                    }
-                    $("#recipient").val(window.account);
-                }
-                return self.refreshBalances();
-            })
-            .then(() => self.refreshStatics()) // We need this syntax for `this` to be correct
-            .then(() => self.listenToLogPaid())
-            .then(() => self.countDown())
+                        if (typeof window.ethereum !== "undefined") {
+                            $(".is-not-eip-1102").removeClass("is-not-eip-1102").addClass("is-eip-1102");
+                        }
+
+                        // Get the initial account balance so it can be displayed.
+                        return window.web3.eth.getAccountsPromise();
+                    })
+                    .then(accounts => self.handleAccounts(accounts))
+                    .then(() => self.refreshStatics()) // We need this syntax for `this` to be correct
+                    .then(() => self.listenToLogPaid())
+                    .then(() => self.countDown())
+            ])
             .catch(console.error);
     },
 
@@ -153,10 +134,10 @@ window.App = {
                 }
             })
             .then(res => res.json())
-            .then(function(response) {
-                $(".status-loading").removeClass("status-loading").addClass(
-                    response.allRunning ? "status-online" : "status-offline");
-            });
+            .then(response => $(".status-loading")
+                .removeClass("status-loading")
+                .addClass(response.allRunning ? "status-online" : "status-offline")
+            );
     },
 
     /**
@@ -225,6 +206,44 @@ window.App = {
     },
 
     /**
+     * @returns {!Promise}
+     */
+    unlockAccounts: function() {
+        $("#btn_unlock").attr("disabled", true);
+        const self = this;
+        return window.ethereum.enable()
+            .then(accounts => self.handleAccounts(accounts))
+            .catch(error => {
+                console.error(error);
+                $("#btn_unlock").attr("disabled", false);
+                $("#send_tx_error").text(languageSelection.getTranslatedString("err-4") + " " + JSON.stringify(error.message));
+                $("#send_tx_error_para").css("visibility", "visible");
+            });
+    },
+
+    /**
+     * @param accounts {!Array<String<Address>>}
+     * @returns { !Promise}
+     */
+    handleAccounts: function(accounts) {
+        const self = this;
+        if (accounts.length == 0) {
+            window.account = undefined;
+        } else {
+            $(".has-no-account").removeClass("has-no-account").addClass("has-account");
+            window.account = accounts[0];
+            $("#your_address").html(window.account);
+            if (typeof self.params.etherscanUrl !== "undefined") {
+                $("#your_address").attr("href", self.params.etherscanUrl + "address/" + window.account);
+            } else {
+                $("#your_address").attr("title", languageSelection.getTranslatedString("err-1"));
+            }
+            $("#recipient").val(window.account);
+        }
+        return this.refreshBalances();
+    },
+
+    /**
      * Needed to bypass Web3's BigNumber bug. web3.fromWei()
      * @returns {!BigNumber}
      */
@@ -238,7 +257,7 @@ window.App = {
     refreshStatics: function() {
         const self = this;
         return Promise.delay(1) // This delay circumvents a Mist bug
-            .then(() => ThrottledFaucet.deployed())
+            .then(ThrottledFaucet.deployed)
             .then(instance => {
                 $(".faucet-not-there").removeClass("faucet-not-there").addClass("faucet-there");
                 $("#address").html(instance.address);
@@ -261,7 +280,7 @@ window.App = {
                         } else {
                             $("#owner").attr("title", languageSelection.getTranslatedString("err-1"));
                         }
-                        console.log(owner, window.account, owner == window.account);
+                        console.log(owner, "is owner:", window.account, owner == window.account);
                         if (owner == window.account) {
                             $(".is-not-owner").removeClass("is-not-owner").addClass("is-owner");
                         }
@@ -272,9 +291,7 @@ window.App = {
                         $("#give_away").textByKey("err");
                         throw error;
                     })
-                    .then(giveAway => {
-                        $("#give_away").html(self.fromWei(giveAway).toString(10));
-                    });
+                    .then(giveAway => $("#give_away").html(self.fromWei(giveAway).toString(10)));
             });
     },
 
@@ -285,12 +302,8 @@ window.App = {
         const self = this;
         let promise;
         if (typeof window.account !== "undefined") {
-            console.log("has account");
             promise = web3.eth.getBalancePromise(window.account)
-                .then(balance => {
-                    console.log(balance);
-                    $("#your_balance").html(self.fromWei(balance).toString(10));
-                })
+                .then(balance => $("#your_balance").html(self.fromWei(balance).toString(10)))
                 .catch(error => {
                     console.error(error);
                     $("#your_balance").textByKey("err");
@@ -343,7 +356,7 @@ window.App = {
     sendCoin: function() {
         const self = this;
         const recipient = $("#recipient").val();
-        console.log("recipient", recipient);
+        console.log("recipient:", recipient);
 
         $("#btn_send").attr("disabled", true);
         $("#send_tx").html("");
@@ -355,7 +368,7 @@ window.App = {
         return ThrottledFaucet.deployed()
             .then(_instance => {
                 instance = _instance;
-                console.log(self.params.owner === window.account);
+                console.log("is owner:", self.params.owner === window.account);
                 if (self.params.owner === window.account && typeof window.account !== "undefined") {
                     return instance.giveTo.call(recipient, {
                             from: window.account
@@ -374,7 +387,7 @@ window.App = {
                     return self.lambdaGiveTo(recipient);
                 }
             })
-            .then(function(txHash) {
+            .then(txHash => {
                 $("#send_tx_status").html("on the way");
                 $("#send_tx").html(txHash);
                 if (typeof self.params.etherscanUrl !== "undefined") {
@@ -382,9 +395,9 @@ window.App = {
                 } else {
                     $("#send_tx").attr("title", languageSelection.getTranslatedString("err-1"));
                 }
-                return web3.eth.getTransactionReceiptMined(txHash);
+                return web3.eth.getTransactionReceiptMined(txHash, 5000);
             })
-            .then(function(receipt) {
+            .then(receipt => {
                 if (receipt.logs.length == 0) {
                     $("#btn_send").attr("disabled", false);
                     throw new Error("coin was not sent for internal reasons");
@@ -394,7 +407,7 @@ window.App = {
             })
             .then(() => self.refreshStatics())
             .then(() => self.countDown())
-            .catch(function(error) {
+            .catch(error => {
                 console.error(error);
                 $("#btn_send").attr("disabled", false);
                 $("#send_tx_error").text(languageSelection.getTranslatedString("tx-status-err2") + " " + error);
@@ -488,7 +501,7 @@ window.App = {
                     gas: 100000
                 });
             })
-            .then(function(txHash) {
+            .then(txHash => {
                 $("#donation").val("");
                 $("#donate_tx_status").html("on the way");
                 $("#donate_tx").html(txHash);
@@ -497,17 +510,17 @@ window.App = {
                 } else {
                     $("#donate_tx").attr("title", languageSelection.getTranslatedString("err-1"));
                 }
-                return web3.eth.getTransactionReceiptMined(txHash);
+                return web3.eth.getTransactionReceiptMined(txHash, 5000);
             })
-            .then(function(receipt) {
-                if (receipt.gasUsed == 100000) {
+            .then(receipt => {
+                if (parseInt(receipt.status) != 1 || receipt.gasUsed == 100000) {
                     throw new Error("donation was not sent for internal reasons");
                 }
                 $("#donate_tx_status").textByKey("status-done");
                 return Promise.delay(5000); // To circumvent a bug where balance is not updated yet
             })
             .then(() => self.refreshBalances())
-            .catch(function(error) {
+            .catch(error => {
                 console.error(error);
                 $("#donate_tx_error").html(languageSelection.getTranslatedString("donate-status-err1") + error);
                 $("#donate_tx_error_para").css("visibility", "visible");
@@ -537,6 +550,6 @@ window.App = {
             .catch(error => {
                 console.error(error);
                 throw error;
-            })
+            });
     },
 };

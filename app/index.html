@@ -6,8 +6,7 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href='./css/app.css' rel='stylesheet' type='text/css'>
     <link href='./css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-    <script src="./app.js"></script>
-    <script src="js/language.js"></script>
+    <script src="js/app.js"></script>
 </head>
 <body class="web3-not-there"> 
     <div class="navbar-header">
@@ -18,7 +17,7 @@
         <ul class="nav navbar-nav">
             <li><a href="https://academy.b9lab.com" b9-data-text-key="academy-link">Check out our courses!</a></li>
         </ul>
-        <a href="statuspage/index.html">
+        <a id="faucet-status-link" href="statuspage/index.html">
             <span id="faucet-status-panel" class="status-loading">
                 <span b9-data-text-key="status">Status</span>:
                 <span class="when-status-loading" b9-data-text-key="status-loading">Loading..</span>
@@ -28,11 +27,11 @@
         </a>
 
         <select class="form-control" id="languageSelection" onchange="changeLanguage(this.value)">
-            <option value="de">Deutsch</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="tr">Türkçe</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="tr">🇹🇷 Türkçe</option>
         </select>
     </div><!--/.nav-collapse -->
 
@@ -43,7 +42,7 @@
         <h1 id="web3_status" b9-data-text-key="status-connecting">Connecting to Ethereum...</h1>
     </div>
 
-    <div class="when-web3-there faucet-not-there has-no-account is-not-owner container">
+    <div class="when-web3-there faucet-not-there has-no-account is-not-owner is-not-eip-1102 container">
         <h1>
             <span class="when-faucet-there" b9-data-text-key="title">Throttled Testnet Faucet</span>
             <del class="when-faucet-not-there" b9-data-text-key="title" b9-data-title-key="title-no-faucet">
@@ -71,13 +70,16 @@
                 <span b9-data-text-key="withdraw-giveaway">GiveAway</span>:
                 <span class="black"><span id="give_away">Loading...</span> Ξ</span>
                 <span class="when-is-owner">
-                    <input id="give_away_input" type="number" class="small"/>
+                    <input id="give_away_input" type="number" class="small" placeholder="0.5"/>
                     <button b9-data-text-key="withdraw-button2" class="btn btn-success" onclick="App.changeGiveAway()">Change</button>
                 </span>
             </p>
             <p>
                 <button id="btn_send" b9-data-text-key="withdraw-button1" class="btn btn-success" onclick="App.sendCoin()" disabled="true">Send To</button>
                 <input id="recipient" type="text" placeholder="0x0123456789012345678901234567890123456789"/>
+                <button id="btn_unlock" b9-data-text-key="withdraw-button3" class="when-is-eip-1102 btn btn-success" onclick="App.unlockAccounts()">
+                    Access my account
+                </button>
             </p>
             <p id="send_tx_para" style="visibility:hidden;">
                 Transaction: <a id="send_tx"></a> <span id="send_tx_status">N/A</span>
@@ -88,10 +90,10 @@
 
             <div class="when-has-account">
 
-                <h3 b9-data-text-key="donate-title">Donate</h3>
+                <h3 b9-data-text-key="donate-title">Donate 👏</h3>
                 <p>
                     <button b9-data-text-key="btn-credit" class="btn btn-success" onclick="App.donate()">Credit</button>
-                    <input id="donation" type="number" placeholder="a number"/> Ξ 
+                    <input id="donation" type="number" placeholder="an amount of Ethers"/> Ξ 
                 </p>
                 <p id="donate_tx_para" style="visibility:hidden;">
                     <span b9-data-text-key="tx">Transaction</span>: <a id="donate_tx"></a> <span id="donate_tx_status">N/A</span>

@@ -5,7 +5,7 @@ module.exports = {
     entry: ['./app/javascripts/app.js'],
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'app.js'
+        filename: 'js/app.js'
     },
     plugins: [
         new CopyWebpackPlugin([
@@ -23,12 +23,14 @@ module.exports = {
                 to: "css"
             },
             {
-                from: './app/javascripts/language.js',
-                to: "js/language.js"
-            },
-            {
-                from: './app/javascripts/language.json',
-                to: "js/language.json"
+                from: './app/statuspage',
+                to: "statuspage"
+            }
+        ]),
+        new CopyWebpackPlugin([
+            { // Doing another instance, because ./app/images/ is dirty in the other instance.
+                from: './app/images/logo-open-edx.png',
+                to: "statuspage/logo-open-edx.png"
             }
         ]),
     ],

@@ -1,20 +1,20 @@
 body {
-  margin-left: 15%;
-  margin-right: 15%;
-  margin-top: 10%;
-  margin-bottom: 10%;
-  font-family: "Open Sans", sans-serif;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+    font-family: "Open Sans", sans-serif;
 }
 
 label {
-  display: inline-block;
-  width: 100px;
+    display: inline-block;
+    width: 100px;
 }
 
 input {
-  width: 350px;
-  padding: 5px;
-  font-size: 16px;
+    width: 350px;
+    padding: 5px;
+    font-size: 16px;
 }
 
 input.small {
@@ -24,74 +24,70 @@ input.small {
 }
   
 button {
-  font-size: 16px;
-  padding: 5px;
+    font-size: 16px;
+    padding: 5px;
 }
 
 h1, h2 {
-  display: inline-block;
-  vertical-align: middle;
-  margin-top: 0px;
-  margin-bottom: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 0px;
+    margin-bottom: 10px;
 }
 
 h2 {
-  color: #AAA;
-  font-size: 32px;
+    color: #AAA;
+    font-size: 32px;
 }
 
 h3 {
-  font-weight: normal;
-  color: #AAA;
-  font-size: 24px;
+    font-weight: normal;
+    color: #AAA;
+    font-size: 24px;
 }
 
 .black {
-  color: black;
+    color: black;
 }
 
 #balance {
-  color: black;
+    color: black;
 }
 
 table, td, th {
-  border: 1px solid #AAA;
-  border-spacing: 0px;
+    border: 1px solid #AAA;
+    border-spacing: 0px;
 }
 
 td, th {
-  padding: 0.25em;
+    padding: 0.25em;
 }
 
 .adding {
-  color: gray;
+    color: gray;
 }
 
 #navbar {
-  background-color: rgba(222,113,80,1);
+    background-color: rgba(222,113,80,1);
 }
 
 #logo {
-  float: left;
-  height: 36px;
-  width: auto;
-  margin-left: 90px;
+    float: left;
+    height: 36px;
+    width: auto;
+    margin-left: 90px;
 }
 
 .navbar-brand {
-  padding: 12px !important;
+    padding: 12px !important;
 }
 
 #navbar a {
-  color: #fff;
+    color: #fff;
 }
 
 #navbar a:hover {
-  background-color: rgba(222,113,80,.8);
-}
-
-.owner-only {
-    display: none;
+    background-color: rgba(222,113,80,.8);
 }
 
 #languageSelection {
@@ -99,7 +95,6 @@ td, th {
     margin-top: 7px;
     width: auto;
 }
-
 
 #faucet-status-panel {
     line-height: 60px;
@@ -110,4 +105,27 @@ td, th {
 
 #faucet-status {
     color: orange;
+}
+
+.when-status-online {
+    color: #18bc9c;
+}
+
+.when-status-offline {
+    color: red
+}
+
+.status-loading .when-status-online,
+.status-loading .when-status-offline,
+.status-online .when-status-loading,
+.status-online .when-status-offline,
+.status-offline .when-status-online,
+.status-offline .when-status-loading,
+.web3-not-there .when-web3-there,
+.web3-there .when-web3-not-there,
+.faucet-not-there .when-faucet-there,
+.faucet-there .when-faucet-not-there,
+.has-no-account .when-has-account,
+.is-not-owner .when-is-owner {
+    display: none;
 }

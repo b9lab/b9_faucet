@@ -1,30 +1,28 @@
+import translations from "./language.json";
+
 function LanguageSelection() {};
 
 LanguageSelection.prototype.selectedLanguage = ""
-LanguageSelection.prototype.languageData = {};
+LanguageSelection.prototype.translations = {};
 
 LanguageSelection.prototype.init = function() {
-    var ctx = this;
+    const ctx = this;
+    ctx.translations = translations.languages;
 
-    return fetch("js/language.json").then(function(response) {
-        return response.json();
-    }).then(function(json) {
-        ctx.languageData = json;
-        let browserLang = navigator.language.substr(0, 2);
-        ctx.selectedLanguage = ctx.isLanguageAvailable(browserLang) ? browserLang : "en";
+    const browserLang = navigator.language.substr(0, 2);
+    ctx.selectedLanguage = ctx.isLanguageAvailable(browserLang) ? browserLang : "en";
 
-        var urlParams = new URLSearchParams(window.location.search);
-        ctx.selectedLanguage = urlParams.has("lang") ? urlParams.getAll("lang") : ctx.selectedLanguage;
-        return Promise.resolve();
-    });
-}
+    const urlParams = new URLSearchParams(window.location.search);
+    ctx.selectedLanguage = urlParams.has("lang") ? urlParams.getAll("lang") : ctx.selectedLanguage;
+};
 
 LanguageSelection.prototype.getTranslatedString = function(id) {
-    return this.languageData["languages"][this.selectedLanguage][id];
-}
+    return this.translations[this.selectedLanguage][id];
+};
 
 LanguageSelection.prototype.isLanguageAvailable = function(lang) {
-    return typeof(this.languageData["languages"][lang]) != "undefined";
-}
+    return typeof(this.translations[lang]) !== "undefined";
+};
 
-var languageSelection = new LanguageSelection();
+export const languageSelection = new LanguageSelection();
+languageSelection.init();
