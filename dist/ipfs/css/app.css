@@ -93,7 +93,12 @@ td, th {
 #languageSelection {
     float: right;
     margin-top: 7px;
+    margin-right: 15px;
     width: auto;
+}
+
+#faucet-status-link {
+    float: right;
 }
 
 #faucet-status-panel {
@@ -123,6 +128,9 @@ td, th {
 .status-offline .when-status-loading,
 .web3-not-there .when-web3-there,
 .web3-there .when-web3-not-there,
+.is-not-eip-1102 .when-is-eip-1102,
+.is-eip-1102 .when-is-not-eip-1102,
+.is-eip-1102.has-account .when-is-eip-1102,
 .faucet-not-there .when-faucet-there,
 .faucet-there .when-faucet-not-there,
 .has-no-account .when-has-account,
